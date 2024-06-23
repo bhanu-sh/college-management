@@ -3,18 +3,19 @@ import {
   Disclosure,
   DisclosureButton,
   DisclosurePanel,
-  Menu,
-  Transition,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
+import { useState } from "react";
 import { useAuth } from "@/contexts/authContext";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const { darkMode, setDarkMode } = useAuth();
+  const checkDark = localStorage.getItem("darkMode");
+  const [dark, setDark] = useState(checkDark === "true");
+  const { setDarkMode } = useAuth();
+
   const navigation = [
     { name: "Home", href: "/", current: pathname === "/" },
     { name: "About", href: "/about", current: pathname === "/about" },
@@ -22,8 +23,9 @@ const Navbar = () => {
   ];
 
   const handleDarkMode = () => {
-    setDarkMode(!darkMode);
-    localStorage.setItem("darkMode", !darkMode);
+    setDark(!dark);
+    setDarkMode(!dark);
+    localStorage.setItem("darkMode", !dark);
   };
 
   function classNames(...classes) {
@@ -31,7 +33,7 @@ const Navbar = () => {
   }
 
   return (
-    <div className={darkMode ? "dark" : ""}>
+    <div className={dark ? "dark" : ""}>
       <div className="bg-white dark:bg-black">
         <Disclosure as="nav">
           {({ open }) => (
@@ -79,7 +81,7 @@ const Navbar = () => {
                           <input
                             type="checkbox"
                             className="theme-switch__checkbox"
-                            checked={darkMode}
+                            checked={dark}
                             onChange={() => handleDarkMode()}
                           />
                           <div className="theme-switch__container">
@@ -137,8 +139,8 @@ const Navbar = () => {
                       <input
                         type="checkbox"
                         className="theme-switch__checkbox"
-                        checked={darkMode}
-                        onChange={() => setDarkMode(!darkMode)}
+                        checked={dark}
+                        onChange={() => handleDarkMode()}
                       />
                       <div className="theme-switch__container">
                         <div className="theme-switch__clouds" />

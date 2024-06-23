@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/authContext";
 import React from "react";
 
 export default function Home() {
-  const { darkMode, setDarkMode } = useAuth();
+  const { darkMode } = useAuth();
   return (
     <div className={darkMode ? "dark" : ""}>
       <div className="h-screen dark:bg-black">
