@@ -7,14 +7,20 @@ import {
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/authContext";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const checkDark = localStorage.getItem("darkMode");
-  const [dark, setDark] = useState(checkDark === "true");
+  const [dark, setDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { setDarkMode } = useAuth();
+
+  useEffect(() => {
+    const checkDark = localStorage.getItem("darkMode") === "true";
+    setDark(checkDark);
+    setMounted(true);
+  }, []);
 
   const navigation = [
     { name: "Home", href: "/", current: pathname === "/" },
@@ -32,6 +38,10 @@ const Navbar = () => {
     return classes.filter(Boolean).join(" ");
   }
 
+  if (!mounted) {
+    // Prevent rendering of navbar until mounted to avoid initial incorrect theme flash
+    return null;
+  }
   return (
     <div className={dark ? "dark" : ""}>
       <div className="bg-white dark:bg-black">
