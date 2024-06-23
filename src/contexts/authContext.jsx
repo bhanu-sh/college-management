@@ -9,7 +9,16 @@ const AuthContext = createContext({
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);  
+
+  const getDarkMode = () => {
+    const isDarkMode = localStorage.getItem("darkMode") === "true";
+    setDarkMode(isDarkMode);
+  };
+
+  useEffect(() => {
+    getDarkMode();
+  }, []);
 
   return (
     <AuthContext.Provider

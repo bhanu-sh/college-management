@@ -21,6 +21,11 @@ const Navbar = () => {
     { name: "Contact", href: "/contact", current: pathname === "/contact" },
   ];
 
+  const handleDarkMode = () => {
+    setDarkMode(!darkMode);
+    localStorage.setItem("darkMode", !darkMode);
+  };
+
   function classNames(...classes) {
     return classes.filter(Boolean).join(" ");
   }
@@ -75,7 +80,7 @@ const Navbar = () => {
                             type="checkbox"
                             className="theme-switch__checkbox"
                             checked={darkMode}
-                            onChange={() => setDarkMode(!darkMode)}
+                            onChange={() => handleDarkMode()}
                           />
                           <div className="theme-switch__container">
                             <div className="theme-switch__clouds" />
