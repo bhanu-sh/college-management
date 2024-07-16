@@ -7,11 +7,9 @@ const adminSchema = new mongoose.Schema({
     },
     f_name: {
         type: String,
-        required: true,
     },
     l_name: {
         type: String,
-        required: true,
     },
     email: {
         type: String,

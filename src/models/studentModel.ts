@@ -22,6 +22,12 @@ const studentSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
+        required: true,
+        unique: true,
+    },
+    aadhar: {
+        type: String,
+        unique: true,
     },
     dob: {
         type: Date,
@@ -43,6 +49,7 @@ const studentSchema = new mongoose.Schema({
     },
     password: {
         type: String,
+        default: '123456',
     },
     role: {
         type: String,
