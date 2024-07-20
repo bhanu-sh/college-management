@@ -21,7 +21,7 @@ export default function Home() {
     <div>
       {/* front page with options for staff, student to login using tailwind */}
 
-      <div className="flex justify-center items-center h-screen bg-gray-200">
+      <div className="flex justify-center items-center h-screen">
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <h1 className="text-3xl font-bold text-center">College Management</h1>
           <div className="mt-10">
@@ -39,9 +39,6 @@ export default function Home() {
             </a>
           </div>
         </div>
-        <button className="absolute bottom-4 right-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" onClick={logout}>
-          Logout
-        </button>
       </div>
     </div>
   );

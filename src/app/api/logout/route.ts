@@ -11,6 +11,7 @@ export async function GET(
       success: true,
     });
     response.cookies.delete("token");
+    response.cookies.delete("user");
     return response;
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
