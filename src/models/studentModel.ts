@@ -1,90 +1,88 @@
 import mongoose from "mongoose";
 
-const studentSchema = new mongoose.Schema({
+const studentSchema = new mongoose.Schema(
+  {
     avatar: {
-        type: String,
-        default: 'https://www.gravatar.com/avatar/?d=mp',
+      type: String,
+      default: "https://www.gravatar.com/avatar/?d=mp",
     },
     f_name: {
-        type: String,
+      type: String,
     },
     l_name: {
-        type: String,
+      type: String,
     },
     father_name: {
-        type: String,
+      type: String,
     },
     mother_name: {
-        type: String,
+      type: String,
     },
     email: {
-        type: String,
+      type: String,
     },
     phone: {
-        type: String,
-        required: true,
-        unique: true,
+      type: String,
+      required: true,
+      unique: true,
     },
     aadhar: {
-        type: String,
-        unique: true,
+      type: String,
+      unique: true,
     },
     dob: {
-        type: Date,
+      type: Date,
     },
     gender: {
-        type: String,
+      type: String,
     },
     address: {
-        type: String,
+      type: String,
     },
     city: {
-        type: String,
+      type: String,
     },
     state: {
-        type: String,
+      type: String,
     },
     roll_no: {
-        type: String,
+      type: String,
     },
     password: {
-        type: String,
-        default: '123456',
+      type: String,
+      default: "123456",
     },
     role: {
-        type: String,
-        default: 'Student',
+      type: String,
+      default: "Student",
     },
     college_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'college',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "college",
     },
     course_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'course',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "course",
     },
     course_fee: {
-        type: Number,
+      type: Number,
     },
     bus_fee: {
-        type: Number,
+      type: Number,
     },
     con_fee: {
-        type: Number,
+      type: Number,
     },
     total_fee: {
-        type: Number,
+      type: Number,
     },
-    created_at: {
-        type: Date,
-        default: Date.now,
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now,
-    },
-})
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Student = mongoose.models.student || mongoose.model('student', studentSchema);
+const Student =
+  mongoose.models.student || mongoose.model("student", studentSchema);
 
 export default Student;

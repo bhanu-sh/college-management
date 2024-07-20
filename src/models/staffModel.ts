@@ -1,66 +1,63 @@
 import mongoose from "mongoose";
 
-const staffSchema = new mongoose.Schema({
+const staffSchema = new mongoose.Schema(
+  {
     avatar: {
-        type: String,
-        default: 'https://www.gravatar.com/avatar/?d=mp',
+      type: String,
+      default: "https://www.gravatar.com/avatar/?d=mp",
     },
     f_name: {
-        type: String,
+      type: String,
     },
     l_name: {
-        type: String,
+      type: String,
     },
     father_name: {
-        type: String,
+      type: String,
     },
     mother_name: {
-        type: String,
+      type: String,
     },
     email: {
-        type: String,
+      type: String,
     },
     phone: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     dob: {
-        type: Date,
+      type: Date,
     },
     gender: {
-        type: String,
+      type: String,
     },
     address: {
-        type: String,
+      type: String,
     },
     city: {
-        type: String,
+      type: String,
     },
     state: {
-        type: String,
+      type: String,
     },
     password: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     role: {
-        type: String,
-        default: 'Staff',
+      type: String,
+      default: "Staff",
     },
     college_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'college',
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "college",
     },
-    created_at: {
-        type: Date,
-        default: Date.now,
-    },
-    updated_at: {
-        type: Date,
-        default: Date.now,
-    },
-})
+  },
+  {
+    timestamps: true,
+  }
+);
 
-const Staff = mongoose.models.staff || mongoose.model('staff', staffSchema);
+const Staff = mongoose.models.staff || mongoose.model("staff", staffSchema);
 
 export default Staff;
