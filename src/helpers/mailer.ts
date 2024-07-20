@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import User from "@/models/userModel";
+import Staff from "@/models/staffModel";
 import bcrypt from "bcryptjs";
 
 export const sendEmail = async ({ email, emailType, userId }: any) => {
@@ -7,12 +7,12 @@ export const sendEmail = async ({ email, emailType, userId }: any) => {
     const hashedToken = await bcrypt.hash(userId.toString(), 10);
 
     if (emailType === "VERIFY") {
-      await User.findByIdAndUpdate(userId, {
+      await Staff.findByIdAndUpdate(userId, {
         verifyToken: hashedToken,
         verifyTokenExpiry: Date.now() + 3600000,
       });
     } else if (emailType === "RESET") {
-      await User.findByIdAndUpdate(userId, {
+      await Staff.findByIdAndUpdate(userId, {
         forgotPasswordToken: hashedToken,
         forgotPasswordExpiry: Date.now() + 3600000,
       });
