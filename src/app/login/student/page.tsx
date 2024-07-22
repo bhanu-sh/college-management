@@ -1,0 +1,88 @@
+"use client";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useAuth } from "@/contexts/authContext";
+
+const StudentLoginPage = () => {
+  const router = useRouter();
+  const [user, setUser] = useState({
+    phone: "",
+    password: "",
+  });
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { setLoggedin, setRole } = useAuth();
+
+  const userLogin = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/student/login", user);
+      console.log(response.data);
+      setLoggedin(true);
+      setRole("Student");
+      toast.success("Login successful!");
+      const studentData = await axios.get("/api/student/me");
+      localStorage.setItem("user", JSON.stringify(studentData.data.data));
+      router.push("/");
+    } catch (error: any) {
+      console.error("Error logging in", error.response.data.error);
+      toast.error("An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user.phone.length > 0 && user.password.length > 0) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [user]);
+
+  return (
+    <div className="flex flex-col w-96 mx-auto justify-center min-h-screen">
+      <h1 className="text-4xl text-center font-bold mb-2">Login</h1>
+      <hr />
+      <label htmlFor="phone">Phone</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="phone"
+        type="tel"
+        value={user.phone}
+        placeholder="Phone"
+        onChange={(e) => setUser({ ...user, phone: e.target.value })}
+      />
+      <label htmlFor="password">Password</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="password"
+        type="password"
+        value={user.password}
+        placeholder="Password"
+        onChange={(e) => setUser({ ...user, password: e.target.value })}
+      />
+      <button
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 disabled:opacity-50"
+        onClick={userLogin}
+        disabled={buttonDisabled || loading}
+      >
+        Login
+      </button>
+      <Link href="/forgot">
+        <p className="text-red-600">Forgot password</p>
+      </Link>
+      <p>
+        Don&apos;t have an account? &nbsp;
+        <Link href="/signup">
+          <span className="text-blue-400">Signup</span>
+        </Link>
+      </p>
+    </div>
+  );
+};
+
+export default StudentLoginPage;

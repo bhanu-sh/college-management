@@ -20,14 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="flex flex-col min-h-screen">
-          <Toaster position="bottom-center" />
-          <AuthProvider>
-            <Navbar />
-            <div className="flex-grow px-4 container mx-auto">{children}</div>
-          </AuthProvider>
-          <div className=" min-w-full "></div>
-        </div>
+        <Toaster position="bottom-center" />
+        <AuthProvider>
+          <Navbar />
+          <div className="flex-grow px-4 container mx-auto">{children}</div>
+        </AuthProvider>
+        <div className=" min-w-full "></div>
       </body>
     </html>
   );

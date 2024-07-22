@@ -9,25 +9,18 @@ import Link from "next/link";
 
 const Navbar = () => {
   const pathname = usePathname();
-  const { loggedin, logout, role, avatar } = useAuth();
+  const { loggedin, logout, role } = useAuth();
   const navigation: { name: string; href: string; current?: boolean }[] = [
     { name: "Home", href: "/", current: pathname === "/" },
-    { name: "Podcasts", href: "/podcasts", current: pathname === "/podcasts" },
-    {
-      name: "Genres",
-      href: "/podcasts/genres",
-      current: pathname === "/podcasts/genres",
-    },
-    { name: "Artists", href: "/artists", current: pathname === "/artists" },
     ...(role === "Admin"
       ? [{ name: "Admin", href: "/admin", current: pathname === "/admin" }]
       : []),
     ...(loggedin
       ? [
           {
-            name: "Profile",
-            href: "/profile",
-            current: pathname === "/profile",
+            name: "Dashboard",
+            href: "/dashboard",
+            current: pathname === "/dashboard",
           },
         ]
       : []),
@@ -58,8 +51,9 @@ const Navbar = () => {
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                 <div className="flex flex-shrink-0 items-center">
                   <Link href="/" className="text-4xl text-white">
-                    Vox
-                    <span className="text-red-600">Tales</span>
+                    C<span className="text-white text-2xl">ollege</span>
+                    <span className="text-red-600">M</span>
+                    <span className="text-red-600 text-2xl">anagement</span>
                   </Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
