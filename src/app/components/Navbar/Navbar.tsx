@@ -12,6 +12,13 @@ const Navbar = () => {
   const { loggedin, logout, role } = useAuth();
   const navigation: { name: string; href: string; current?: boolean }[] = [
     { name: "Home", href: "/", current: pathname === "/" },
+    { name: "About", href: "/about", current: pathname === "/about" },
+    { name: "Contact", href: "/contact", current: pathname === "/contact" },
+    {
+      name: "Admin Login",
+      href: "/login/admin",
+      current: pathname === "/login/admin",
+    },
     ...(role === "Admin"
       ? [{ name: "Admin", href: "/admin", current: pathname === "/admin" }]
       : []),
@@ -49,11 +56,12 @@ const Navbar = () => {
                 </Disclosure.Button>
               </div>
               <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-                <div className="flex flex-shrink-0 items-center">
+                <div className="flex flex-shrink-0 items-center bg-black">
                   <Link href="/" className="text-4xl text-white">
-                    C<span className="text-white text-2xl">ollege</span>
-                    <span className="text-red-600">M</span>
-                    <span className="text-red-600 text-2xl">anagement</span>
+                    C<span className="text-white text-2xl">ampus</span>
+                    <span className="text-red-600">
+                      E<span className="text-2xl">ase</span>
+                    </span>
                   </Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
