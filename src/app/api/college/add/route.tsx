@@ -21,7 +21,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const slug = name.toLowerCase().replace(/ /g, "-");
+    // Create slug
+    let slug = name.toLowerCase().replace(/ /g, "-");
+
+    // Check if slug already exists
+    const slugExists = await College.findOne({ slug });
+
+    if (slugExists) {
+      // Append random number to slug
+      const random = Math.floor(Math.random() * 1000);
+      const newSlug = `${slug}-${random}`;
+      slug = newSlug;
+    }
 
     // Create new College
     const newCollege = new College({

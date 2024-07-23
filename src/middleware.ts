@@ -4,12 +4,12 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname;
     
-    const isPublicPath = path === '/' || path === '/signup' || path === '/signup/admin' || path === '/login' || path === '/staff/login';
+    const isPublicPath = path === '/' || path === '/signup/admin' || path === '/login' || path === '/login/admin' || path === '/login/staff' || path === '/login/student';
     
     const token = request.cookies.get('token')?.value || '';
 
     if (isPublicPath && token) {
-        return NextResponse.redirect(new URL('/', request.nextUrl));
+        return NextResponse.redirect(new URL('/dashboard', request.nextUrl));
     }
     
     if (!isPublicPath && !token) {
@@ -20,13 +20,11 @@ export function middleware(request: NextRequest) {
 export const config = {
     matcher: [
         "/profile", 
+        "/signup/:path*",
         "/login",
-        "/signup",
-        "/verifyemail",
-        "/admin",
-        "/admin/manage-users",
-        "/admin/manage-admins",
-        "/signup/admin",
-        "/staff/login",
+        "/login/:path*",
+        "/colleges/:path*",
+        "/staffs/:path*",
+        "/"
     ]
 };

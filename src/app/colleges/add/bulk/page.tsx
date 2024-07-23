@@ -5,7 +5,7 @@ import { excelToJson } from "@/helpers/excelToJson";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-const TestPage = () => {
+export default function BulkCollegeAdd() {
   const [file, setFile] = React.useState<File | null>(null);
   const [json, setJson] = React.useState<any>(null);
   const [preview, setPreview] = React.useState<boolean>(false);
@@ -30,24 +30,24 @@ const TestPage = () => {
   //   if (file) {
   //     try {
   //       setLoading(true);
-  //       toast.loading("Uploading staff members...");
+  //       toast.loading("Uploading Colleges...");
   //       const json = await excelToJson(file);
 
-  //       // Convert phone numbers and passwords to strings
-  //       const formattedJson = (json as any[]).map((staffMember: any) => ({
-  //         ...staffMember,
-  //         phone: staffMember.phone.toString(),
-  //         password: staffMember.password.toString(),
+  //       // Convert phone and pincode numbers to strings
+  //       const formattedJson = (json as any[]).map((college: any) => ({
+  //         ...college,
+  //         phone: college.phone.toString(),
+  //         pincode: college.pincode.toString(),
   //       }));
 
   //       console.log("Converted JSON:", formattedJson); // Log the formatted JSON
 
-  //       const res = await fetch("/api/staff/bulksignup", {
+  //       const res = await fetch("/api/college/bulkadd", {
   //         method: "POST",
   //         headers: {
   //           "Content-Type": "application/json",
   //         },
-  //         body: JSON.stringify({ staff: formattedJson }), // Ensure the structure matches server expectations
+  //         body: JSON.stringify({ colleges: formattedJson }), // Ensure the structure matches server expectations
   //       });
 
   //       if (!res.ok) {
@@ -60,12 +60,10 @@ const TestPage = () => {
   //       const data = await res.json();
   //       console.log("Response data:", data); // Log the response data
   //       toast.remove();
-  //       toast.success("Staff members uploaded successfully");
+  //       toast.success("Colleges added successfully");
   //       // Handle success, possibly update state to reflect successful upload
   //     } catch (error) {
   //       console.error("An error occurred:", error);
-  //       toast.remove();
-  //       toast.error("An error occurred while uploading staff members");
   //       // Handle error, possibly update state to reflect the error
   //     } finally {
   //       setLoading(false);
@@ -80,20 +78,20 @@ const TestPage = () => {
     if (file) {
       try {
         setLoading(true);
-        toast.loading("Uploading staff members...");
+        toast.loading("Uploading Colleges...");
         const json = await excelToJson(file);
 
-        // Convert phone numbers and passwords to strings
-        const formattedJson = (json as any[]).map((staffMember: any) => ({
-          ...staffMember,
-          phone: staffMember.phone.toString(),
-          password: staffMember.password.toString(),
+        // Convert phone and pincode numbers to strings
+        const formattedJson = (json as any[]).map((college: any) => ({
+          ...college,
+          phone: college.phone.toString(),
+          pincode: college.pincode.toString(),
         }));
 
         console.log("Converted JSON:", formattedJson); // Log the formatted JSON
 
-        const res = await axios.post("/api/staff/bulksignup", {
-          staff: formattedJson,
+        const res = await axios.post("/api/college/bulkadd", {
+          colleges: formattedJson,
         });
 
         if (res.status !== 200) {
@@ -106,19 +104,16 @@ const TestPage = () => {
         const data = res.data;
         console.log("Response data:", data); // Log the response data
         toast.remove();
-        toast.success("Staff members uploaded successfully");
+        toast.success("Colleges added successfully");
         // Handle success, possibly update state to reflect successful upload
       } catch (error) {
         console.error("An error occurred:", error);
-        toast.remove();
-        toast.error("An error occurred while uploading staff members");
         // Handle error, possibly update state to reflect the error
       } finally {
         setLoading(false);
       }
     } else {
       console.warn("No file selected");
-      toast.error("No file selected");
       // Handle case where no file is selected
     }
   };
@@ -163,6 +158,4 @@ const TestPage = () => {
       )}
     </div>
   );
-};
-
-export default TestPage;
+}

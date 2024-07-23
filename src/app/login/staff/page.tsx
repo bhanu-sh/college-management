@@ -25,7 +25,7 @@ const StaffLoginPage = () => {
       setRole("Staff");
       toast.success("Login successful!");
       const staffData = await axios.get("/api/staff/me");
-      localStorage.setItem("user", JSON.stringify(staffData.data.data));
+      sessionStorage.setItem("user", JSON.stringify(staffData.data.data));
       router.push("/");
     } catch (error: any) {
       console.error("Error logging in", error.response.data.error);

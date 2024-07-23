@@ -15,6 +15,7 @@ interface College {
   city: string;
   state: string;
   pincode: string;
+  slug: string;
 }
 
 export default function CollegesPage() {
@@ -22,7 +23,6 @@ export default function CollegesPage() {
   const [user, setUser] = useState<null | { role: string }>(null);
   const [selected, setSelected] = useState<string[]>([]);
   const { loggedin, role } = useAuth();
-  const [xls, setXls] = useState<any>(null);
 
   const getColleges = async () => {
     try {
@@ -95,6 +95,7 @@ export default function CollegesPage() {
       City: college.city,
       State: college.state,
       Pincode: college.pincode,
+      Slug: college.slug,
     }));
     jsonToExcel(data, "colleges");
   };
@@ -164,6 +165,9 @@ export default function CollegesPage() {
               <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Pincode
               </th>
+              <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+                Slug
+              </th>
               {loggedin && user?.role === "Admin" && (
                 <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Actions
@@ -211,8 +215,14 @@ export default function CollegesPage() {
                 <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                   {college.pincode}
                 </td>
+                <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
+                  {college.slug}
+                </td>
                 {loggedin && user?.role === "Admin" && (
                   <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 flex flex-col">
+                    <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 mb-2">
+                      <Link href={`/colleges/${college.slug}`}>View</Link>
+                    </button>
                     <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 mb-2">
                       Edit
                     </button>

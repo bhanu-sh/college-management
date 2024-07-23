@@ -1,5 +1,4 @@
 import { connect } from "@/dbConfig/dbConfig";
-import Admin from "@/models/adminModel";
 import College from "@/models/collegeModel";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -20,11 +19,9 @@ export async function POST(request: NextRequest) {
 
     const results = [];
 
-    for (const collegeMember of college) {
-      const { college_id } = collegeMember;
-
+    for (const college_id of college) {
       try {
-        const collegeExist = await College.findOne({ college_id });
+        const collegeExist = await College.findOne({ _id: college_id });
 
         if (!collegeExist) {
           results.push({
@@ -35,7 +32,7 @@ export async function POST(request: NextRequest) {
           continue;
         }
 
-        await College.deleteOne({ college_id });
+        await College.deleteOne({ _id: college_id });
 
         results.push({
           college_id,

@@ -42,17 +42,6 @@ export async function POST(request: NextRequest) {
             httpOnly: true,
         })
 
-        // store user data in local storage
-        const user = {
-            id: admin._id,
-            phone: admin.phone,
-            role: admin.role,
-            userType: admin.userType,
-        }
-        response.cookies.set('user', JSON.stringify(user), {
-            httpOnly: false,
-        })
-
         return response;
 
     } catch (error: any) {

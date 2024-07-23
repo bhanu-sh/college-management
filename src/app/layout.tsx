@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Toaster position="bottom-center" />
+        <Toaster position="top-center" />
         <AuthProvider>
           <Navbar />
           <div className="flex-grow px-4 container mx-auto">{children}</div>

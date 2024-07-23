@@ -9,25 +9,31 @@ export default function Home() {
 
   return (
     <div>
-      {/* front page with options for staff, student to login using tailwind */}
-
-      <div className="flex justify-center items-center h-screen">
-        <div className="bg-white p-8 rounded-lg shadow-lg">
-          <div className="">
-            {loggedin ? (
-              <Link
-                href="/dashboard"
-                className="block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-              >
+      {/* Landing Page */}
+      <div className="flex flex-col items-center justify-center h-screen">
+        {loggedin ? (
+          <div>
+            <h1 className="text-4xl text-center font-bold">Hello,</h1>
+            <Link href="/dashboard">
+              <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400">
                 Dashboard
-              </Link>
-            ) : (
-              <>
-                <LoginPage />
-              </>
-            )}
+              </button>
+            </Link>
           </div>
-        </div>
+        ) : (
+          <>
+            <h1 className="text-4xl font-bold">
+              Welcome to College Management System
+            </h1>
+            <div className="mt-5">
+              <Link href="/login">
+                <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400">
+                  Login
+                </button>
+              </Link>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

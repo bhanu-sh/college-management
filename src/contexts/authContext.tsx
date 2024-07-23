@@ -1,13 +1,18 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, use } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 
 const AuthContext = createContext<{
   loggedin: boolean;
-  // fetchUserData: () => void;
   avatar: string;
   setAvatar: (value: string) => void;
   setLoggedin: (value: boolean) => void;
@@ -15,11 +20,10 @@ const AuthContext = createContext<{
   setRole: (value: "Student" | "Staff" | "Admin") => void;
   logout: () => void;
 }>({
-  // fetchUserData: () => {},
   loggedin: false,
   avatar: "",
-  setLoggedin: () => {},
   setAvatar: () => {},
+  setLoggedin: () => {},
   role: "Student",
   setRole: () => {},
   logout: () => {},
@@ -27,39 +31,47 @@ const AuthContext = createContext<{
 
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [loggedin, setLoggedin] = useState(false);
-  const [avatar, setAvatar] = useState("");
+  const [loggedin, setLoggedin] = useState<boolean>(false);
+  const [avatar, setAvatar] = useState<string>("");
+  const [role, setRole] = useState<"Student" | "Staff" | "Admin">("Student");
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
-  const [role, setRole] = useState("user" as "Student" | "Staff" | "Admin");
-  // const [route, setRoute] = useState("student");
 
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      setLoggedin(true);
+    if (typeof window !== "undefined") {
+      const user = sessionStorage.getItem("user");
+      setLoggedin(user !== null);
+      setRole(user !== null ? JSON.parse(user).role : "Student");
+      setLoading(false);
     }
   }, []);
-
 
   const logout = async () => {
     try {
       await axios.get("/api/logout");
       toast.success("Logout successful!");
-      localStorage.removeItem("user");
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("user");
+      }
       setLoggedin(false);
       router.push("/");
     } catch (error: any) {
-      console.error("Error getting user details", error.message);
+      console.error("Error logging out", error.message);
+      toast.error("Logout failed.");
     }
   };
+
+  // Render a loading message or component if necessary
+  if (loading) {
+    return <div>Loading...</div>; // Or a loading spinner
+  }
 
   return (
     <AuthContext.Provider
       value={{
-        // fetchUserData,
         avatar,
         setAvatar,
         loggedin,

@@ -2,11 +2,22 @@ import { connect } from "@/dbConfig/dbConfig";
 import Staff from "@/models/staffModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { getDataFromToken } from "@/helpers/getDataFromToken";
+import Admin from "@/models/adminModel";
 
 export async function POST(request: NextRequest) {
   await connect();
 
   try {
+    const userID = getDataFromToken(request);
+    console.log("request", request);
+    if (!userID) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+    }
+    const user = await Admin.findById({ _id: userID }).select("-password");
+    if (!user) {
+      return NextResponse.json({ message: "Forbidden" }, { status: 404 });
+    }
     const reqBody = await request.json();
     console.log("Request body:", reqBody); // Log the request body
     const { staff } = reqBody;
@@ -21,7 +32,21 @@ export async function POST(request: NextRequest) {
     const results = [];
 
     for (const staffMember of staff) {
-      const { f_name, l_name, father_name, mother_name, email, phone, dob, gender, address, city, state, college_id, password } = staffMember;
+      const {
+        f_name,
+        l_name,
+        father_name,
+        mother_name,
+        email,
+        phone,
+        dob,
+        gender,
+        address,
+        city,
+        state,
+        college_id,
+        password,
+      } = staffMember;
 
       try {
         // Validate phone and password

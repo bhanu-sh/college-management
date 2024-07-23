@@ -27,8 +27,8 @@ export default function AddCollege() {
       toast.success("College Added");
       router.push("/colleges");
     } catch (error: any) {
-      console.log("Adding failed", error.message);
-      toast.error(error.message);
+      console.log("Adding failed", error.response.data.error);
+      toast.error(error.response.data.error);
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,9 @@ export default function AddCollege() {
         required
         value={college.name}
         placeholder="Name"
-        onChange={(e) => setCollege({ ...college, name: e.target.value })}
+        onChange={(e) => {
+          setCollege({ ...college, name: e.target.value });
+        }}
       />
       <label htmlFor="email">Email</label>
       <input
@@ -74,57 +76,57 @@ export default function AddCollege() {
         placeholder="Email"
         onChange={(e) => setCollege({ ...college, email: e.target.value })}
       />
-        <label htmlFor="phone">Phone</label>
-        <input
-            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-            id="phone"
-            type="text"
-            required
-            value={college.phone}
-            placeholder="Phone"
-            onChange={(e) => setCollege({ ...college, phone: e.target.value })}
-        />
-        <label htmlFor="address">Address</label>
-        <input
-            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-            id="address"
-            type="text"
-            required
-            value={college.address}
-            placeholder="Address"
-            onChange={(e) => setCollege({ ...college, address: e.target.value })}
-        />
-        <label htmlFor="city">City</label>
-        <input
-            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-            id="city"
-            type="text"
-            required
-            value={college.city}
-            placeholder="City"
-            onChange={(e) => setCollege({ ...college, city: e.target.value })}
-        />
-        <label htmlFor="state">State</label>
-        <input
-            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-            id="state"
-            type="text"
-            required
-            value={college.state}
-            placeholder="State"
-            onChange={(e) => setCollege({ ...college, state: e.target.value })}
-        />
-        <label htmlFor="pincode">Pincode</label>
-        <input
-            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-            id="pincode"
-            type="text"
-            required
-            value={college.pincode}
-            placeholder="Pincode"
-            onChange={(e) => setCollege({ ...college, pincode: e.target.value })}
-        />
-        <hr />
+      <label htmlFor="phone">Phone</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="phone"
+        type="text"
+        required
+        value={college.phone}
+        placeholder="Phone"
+        onChange={(e) => setCollege({ ...college, phone: e.target.value })}
+      />
+      <label htmlFor="address">Address</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="address"
+        type="text"
+        required
+        value={college.address}
+        placeholder="Address"
+        onChange={(e) => setCollege({ ...college, address: e.target.value })}
+      />
+      <label htmlFor="city">City</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="city"
+        type="text"
+        required
+        value={college.city}
+        placeholder="City"
+        onChange={(e) => setCollege({ ...college, city: e.target.value })}
+      />
+      <label htmlFor="state">State</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="state"
+        type="text"
+        required
+        value={college.state}
+        placeholder="State"
+        onChange={(e) => setCollege({ ...college, state: e.target.value })}
+      />
+      <label htmlFor="pincode">Pincode</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="pincode"
+        type="text"
+        required
+        value={college.pincode}
+        placeholder="Pincode"
+        onChange={(e) => setCollege({ ...college, pincode: e.target.value })}
+      />
+      <hr />
       <button
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 disabled:opacity-50"
         disabled={buttonDisabled || loading}
