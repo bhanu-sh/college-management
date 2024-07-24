@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const studentSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     avatar: {
       type: String,
@@ -26,10 +26,6 @@ const studentSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    aadhar: {
-      type: String,
-      unique: true,
-    },
     dob: {
       type: Date,
     },
@@ -45,36 +41,55 @@ const studentSchema = new mongoose.Schema(
     state: {
       type: String,
     },
-    roll_no: {
-      type: String,
-    },
     password: {
       type: String,
-      default: "123456",
+      required: true,
+      default: "123",
     },
     role: {
       type: String,
+      enum: ["Student", "Staff"],
       default: "Student",
+    },
+    position: {
+      type: String,
+      enum: [
+        "Principal",
+        "HOD",
+        "Professor",
+        "Assistant Professor",
+        "Lab Assistant",
+        "Office Staff",
+      ],
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "college",
     },
-    course_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "course",
-    },
-    course_fee: {
-      type: Number,
-    },
-    bus_fee: {
-      type: Number,
-    },
-    con_fee: {
-      type: Number,
-    },
-    total_fee: {
-      type: Number,
+    studentDetails: {
+      roll_no: {
+        type: String,
+      },
+      aadhar: {
+        type: String,
+        unique: true,
+      },
+      course_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "course",
+      },
+      course_fee: {
+        type: Number,
+      },
+      bus_fee: {
+        type: Number,
+      },
+      con_fee: {
+        type: Number,
+      },
+      total_fee: {
+        type: Number,
+      },
     },
   },
   {
@@ -82,7 +97,6 @@ const studentSchema = new mongoose.Schema(
   }
 );
 
-const Student =
-  mongoose.models.student || mongoose.model("student", studentSchema);
+const User = mongoose.models.user || mongoose.model("user", userSchema);
 
-export default Student;
+export default User;
