@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const staffSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
   {
     avatar: {
       type: String,
@@ -24,6 +24,7 @@ const staffSchema = new mongoose.Schema(
     phone: {
       type: String,
       required: true,
+      unique: true,
     },
     dob: {
       type: Date,
@@ -43,14 +44,45 @@ const staffSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+      default: "123456",
     },
     role: {
       type: String,
-      default: "Staff",
+      enum: ["Student", "Staff"],
+      default: "Student",
+    },
+    position: {
+      type: String,
+      enum: ["Principal", "HOD", "Professor", "Assistant Professor", "Lab Assistant", "Office Staff"],
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "college",
+    },
+    studentDetails: {
+      roll_no: {
+        type: String,
+      },
+      aadhar: {
+        type: String,
+        unique: true,
+      },
+      course_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "course",
+      },
+      course_fee: {
+        type: Number,
+      },
+      bus_fee: {
+        type: Number,
+      },
+      con_fee: {
+        type: Number,
+      },
+      total_fee: {
+        type: Number,
+      },
     },
   },
   {
@@ -58,6 +90,6 @@ const staffSchema = new mongoose.Schema(
   }
 );
 
-const Staff = mongoose.models.staff || mongoose.model("staff", staffSchema);
+const User = mongoose.models.user || mongoose.model("user", userSchema);
 
-export default Staff;
+export default User;

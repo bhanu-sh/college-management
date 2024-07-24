@@ -1,28 +1,88 @@
 "use client";
-
-import { useAuth } from "@/contexts/authContext";
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useAuth } from "@/contexts/authContext";
 
-const LoginPage = () => {
-  const { loggedin } = useAuth();
+const StaffLoginPage = () => {
+  const router = useRouter();
+  const [user, setUser] = useState({
+    phone: "",
+    password: "",
+  });
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const { setLoggedin, setRole } = useAuth();
+
+  const userLogin = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/staff/login", user);
+      console.log(response.data);
+      setLoggedin(true);
+      setRole("Staff");
+      toast.success("Login successful!");
+      const staffData = await axios.get("/api/staff/me");
+      sessionStorage.setItem("user", JSON.stringify(staffData.data.data));
+      router.push("/");
+    } catch (error: any) {
+      console.error("Error logging in", error.response.data.error);
+      toast.error("An error occurred");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user.phone.length > 0 && user.password.length > 0) {
+      setButtonDisabled(false);
+    } else {
+      setButtonDisabled(true);
+    }
+  }, [user]);
+
   return (
-    <div className="flex flex-col justify-center items-center h-screen">
-      <h1 className="text-3xl font-bold mb-4">Login</h1>
-      <Link
-        href="/login/staff"
-        className="block bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-40"
+    <div className="flex flex-col w-96 mx-auto justify-center min-h-screen">
+      <h1 className="text-4xl text-center font-bold mb-2">Login</h1>
+      <hr />
+      <label htmlFor="phone">Phone</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="phone"
+        type="tel"
+        value={user.phone}
+        placeholder="Phone"
+        onChange={(e) => setUser({ ...user, phone: e.target.value })}
+      />
+      <label htmlFor="password">Password</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="password"
+        type="password"
+        value={user.password}
+        placeholder="Password"
+        onChange={(e) => setUser({ ...user, password: e.target.value })}
+      />
+      <button
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 disabled:opacity-50"
+        onClick={userLogin}
+        disabled={buttonDisabled || loading}
       >
-        Staff
+        Login
+      </button>
+      <Link href="/forgot">
+        <p className="text-red-600">Forgot password</p>
       </Link>
-
-      <Link
-        href="/login/student"
-        className="block bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded mt-4 focus:outline-none focus:shadow-outline w-40"
-      >
-        Student
-      </Link>
+      <p>
+        Don&apos;t have an account? &nbsp;
+        <Link href="/signup">
+          <span className="text-blue-400">Signup</span>
+        </Link>
+      </p>
     </div>
   );
 };
 
-export default LoginPage;
+export default StaffLoginPage;
