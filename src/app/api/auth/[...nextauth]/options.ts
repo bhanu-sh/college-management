@@ -17,10 +17,7 @@ export const authOptions: NextAuthOptions = {
         await connect();
         try {
           const user = await User.findOne({
-            $or: [
-              { email: credentials.identifier },
-              { phone: credentials.identifier },
-            ],
+            phone: credentials.phone,
           });
 
           if (!user) {
@@ -50,6 +47,7 @@ export const authOptions: NextAuthOptions = {
         token.role = user.role;
         token.f_name = user.f_name;
         token.avatar = user.avatar;
+        token.college_id = user.college_id?.toString();
       }
 
       return token;
@@ -60,6 +58,7 @@ export const authOptions: NextAuthOptions = {
         session.user.role = token.role;
         session.user.f_name = token.f_name;
         session.user.avatar = token.avatar;
+        session.user.college_id = token.college_id;
       }
       return session;
     },

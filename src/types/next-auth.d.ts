@@ -7,6 +7,7 @@ declare module "next-auth" {
     role?: string;
     f_name?: string;
     avatar?: string;
+    college_id?: string;
   }
   interface Session {
     user: {
@@ -14,6 +15,7 @@ declare module "next-auth" {
       role?: string;
       f_name?: string;
       avatar?: string;
+      college_id?: string;
     } & DefaultSession["user"];
   }
 }
@@ -24,5 +26,6 @@ declare module "next-auth/jwt" {
     role?: string;
     f_name?: string;
     avatar?: string;
+    college_id?: string;
   }
 }

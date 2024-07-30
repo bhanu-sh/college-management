@@ -55,10 +55,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: [
         "Principal",
-        "HOD",
         "Professor",
         "Assistant Professor",
-        "Lab Assistant",
         "Office Staff",
       ],
     },

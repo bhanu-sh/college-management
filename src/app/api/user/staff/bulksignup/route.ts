@@ -1,23 +1,12 @@
 import { connect } from "@/dbConfig/dbConfig";
-import Staff from "@/models/userModel";
+import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
-import { getDataFromToken } from "@/helpers/getDataFromToken";
-import Admin from "@/models/adminModel";
 
 export async function POST(request: NextRequest) {
   await connect();
 
   try {
-    const userID = getDataFromToken(request);
-    console.log("request", request);
-    if (!userID) {
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-    }
-    const user = await Admin.findById({ _id: userID }).select("-password");
-    if (!user) {
-      return NextResponse.json({ message: "Forbidden" }, { status: 404 });
-    }
     const reqBody = await request.json();
     console.log("Request body:", reqBody); // Log the request body
     const { staff } = reqBody;
@@ -46,6 +35,8 @@ export async function POST(request: NextRequest) {
         state,
         college_id,
         password,
+        position,
+        aadhar,
       } = staffMember;
 
       try {
@@ -65,7 +56,7 @@ export async function POST(request: NextRequest) {
         }
 
         // Check if staff already exists
-        const staffExist = await Staff.findOne({ phone });
+        const staffExist = await User.findOne({ phone });
 
         if (staffExist) {
           results.push({
@@ -81,7 +72,7 @@ export async function POST(request: NextRequest) {
         const hashedPassword = await bcrypt.hash(password, salt);
 
         // Create new staff
-        const newStaff = new Staff({
+        const newStaff = new User({
           f_name,
           l_name,
           father_name,
@@ -91,9 +82,12 @@ export async function POST(request: NextRequest) {
           dob,
           gender,
           address,
+          role: "Staff",
+          position,
           city,
           state,
           college_id,
+          aadhar,
           password: hashedPassword,
         });
 

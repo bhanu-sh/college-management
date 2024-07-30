@@ -86,13 +86,13 @@ const TestPage = () => {
         // Convert phone numbers and passwords to strings
         const formattedJson = (json as any[]).map((staffMember: any) => ({
           ...staffMember,
-          phone: staffMember.phone.toString(),
-          password: staffMember.password.toString(),
+          phone: "" + staffMember.phone,
+          password: "" + staffMember.password,
         }));
 
         console.log("Converted JSON:", formattedJson); // Log the formatted JSON
 
-        const res = await axios.post("/api/staff/bulksignup", {
+        const res = await axios.post("/api/user/staff/bulksignup", {
           staff: formattedJson,
         });
 

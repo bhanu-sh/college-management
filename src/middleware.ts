@@ -6,11 +6,11 @@ export default withAuth(
   function middleware(req) {
     console.log(req.nextauth.token)
     if (
-      req.nextUrl.pathname === "/colleges" &&
+      req.nextUrl.pathname.startsWith("/colleges") &&
       req.nextauth.token?.role !== "Admin"
     ) {
-      return new NextResponse("Unauthorized", { status: 401 })
-    }
+      return NextResponse.redirect(new URL("/unauthorized", req.url))
+    } 
   },
   {
     callbacks: {
@@ -21,4 +21,4 @@ export default withAuth(
   },
 )
 
-export const config = { matcher: ["/dashboard", "/colleges"] }
+export const config = { matcher: ["/dashboard", "/colleges/:path*"] }
