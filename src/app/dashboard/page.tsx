@@ -1,9 +1,9 @@
 "use client";
 
 import React from "react";
-import AdminDashboard from "./admin/AdminDashboard";
-import { signIn, signOut, useSession } from "next-auth/react";
-import StaffDashboard from "./staff/StaffDashboard";
+import AdminDashboard from "@/app/dashboard/admin/AdminDashboard";
+import { useSession } from "next-auth/react";
+import StaffDashboard from "@/app/dashboard/staff/StaffDashboard";
 
 const DashboardPage = () => {
 
