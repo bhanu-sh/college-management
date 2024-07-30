@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["Student", "Staff"],
+      enum: ["Student", "Staff", "Admin"],
       default: "Student",
     },
     position: {
@@ -66,30 +66,27 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "college",
     },
-    studentDetails: {
-      roll_no: {
-        type: String,
-      },
-      aadhar: {
-        type: String,
-        unique: true,
-      },
-      course_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "course",
-      },
-      course_fee: {
-        type: Number,
-      },
-      bus_fee: {
-        type: Number,
-      },
-      con_fee: {
-        type: Number,
-      },
-      total_fee: {
-        type: Number,
-      },
+    roll_no: {
+      type: String,
+    },
+    aadhar: {
+      type: String,
+    },
+    course_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "course",
+    },
+    course_fee: {
+      type: Number,
+    },
+    bus_fee: {
+      type: Number,
+    },
+    con_fee: {
+      type: Number,
+    },
+    total_fee: {
+      type: Number,
     },
   },
   {

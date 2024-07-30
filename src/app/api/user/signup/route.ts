@@ -1,5 +1,5 @@
 import {connect} from "@/dbConfig/dbConfig";
-import Staff from "@/models/userModel";
+import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
@@ -9,12 +9,12 @@ connect()
 export async function POST(request: NextRequest) {
     try {
         const reqBody = await request.json()
-        const {phone, password} = reqBody
+        const {phone, password, name} = reqBody
 
         console.log(reqBody);
 
         // Check if staff already exists
-        const staff = await Staff.findOne({phone})
+        const staff = await User.findOne({phone})
 
         if (staff) {
             return NextResponse.json({error: 'Staff already exists'}, {status: 400})
@@ -25,7 +25,8 @@ export async function POST(request: NextRequest) {
         const hashedPassword = await bcrypt.hash(password, salt)
 
         // Create new staff
-        const newStaff = new Staff({
+        const newStaff = new User({
+            f_name: name,
             phone,
             password: hashedPassword
         })

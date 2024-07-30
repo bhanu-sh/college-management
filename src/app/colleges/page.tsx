@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Link from "next/link";
-import { useAuth } from "@/contexts/authContext";
+import { signOut, useSession } from "next-auth/react";
 import toast from "react-hot-toast";
 import { jsonToExcel } from "@/helpers/jsonToExcel";
 
@@ -22,7 +22,8 @@ export default function CollegesPage() {
   const [colleges, setColleges] = useState([] as College[]);
   const [user, setUser] = useState<null | { role: string }>(null);
   const [selected, setSelected] = useState<string[]>([]);
-  const { loggedin, role } = useAuth();
+
+  const { data: session } = useSession();
 
   const getColleges = async () => {
     try {
@@ -125,7 +126,7 @@ export default function CollegesPage() {
         >
           Export to Excel
         </button>
-        {loggedin && user?.role === "Admin" && (
+        {session && session.user?.role === "Admin" && (
           <button
             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400"
             onClick={() => {
@@ -168,7 +169,7 @@ export default function CollegesPage() {
               <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                 Slug
               </th>
-              {loggedin && user?.role === "Admin" && (
+              {session && session.user?.role === "Admin" && (
                 <th className="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
                   Actions
                 </th>
@@ -218,7 +219,7 @@ export default function CollegesPage() {
                 <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500">
                   {college.slug}
                 </td>
-                {loggedin && user?.role === "Admin" && (
+                {session && session.user?.role === "Admin" && (
                   <td className="px-6 py-4 whitespace-no-wrap text-sm leading-5 text-gray-500 flex flex-col">
                     <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 mb-2">
                       <Link href={`/colleges/${college.slug}`}>View</Link>

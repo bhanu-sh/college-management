@@ -5,8 +5,14 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useAuth } from "@/contexts/authContext";
+import Head from "next/head";
 
 export default function AdminLoginPage() {
+  <div>
+    <Head>
+      <title>Admin Login</title>
+    </Head>
+  </div>
   const router = useRouter();
   const [user, setUser] = useState({
     email: "",
@@ -44,7 +50,11 @@ export default function AdminLoginPage() {
   }, [user]);
 
   return (
+    
     <div className="flex flex-col w-96 mx-auto justify-center min-h-screen">
+      <Head>
+        <title>Admin Login</title>
+      </Head>
       <h1 className="text-4xl text-center font-bold mb-2">Login</h1>
       <hr />
       <label htmlFor="email">Email</label>

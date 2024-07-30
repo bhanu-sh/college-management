@@ -3,7 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar/Navbar";
-import { AuthProvider } from "@/contexts/authContext";
+import AuthProvider from "@/contexts/authProvider";
+import Head from "next/head";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,16 +19,21 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  <div>
+    <Head>
+      <link rel="icon" href="/favicon.png" />
+    </Head>
+  </div>
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Toaster position="top-center" />
-        <AuthProvider>
+      <AuthProvider>
+        <body className={inter.className + " bg-gray-100"}>
+          <Toaster position="top-center" />
           <Navbar />
-          <div className="flex-grow px-4 container mx-auto">{children}</div>
-        </AuthProvider>
-        <div className=" min-w-full "></div>
-      </body>
+          <div className="flex-grow px-4 container mx-auto ">{children}</div>
+          <div className=" min-w-full "></div>
+        </body>
+      </AuthProvider>
     </html>
   );
 }
