@@ -8,20 +8,23 @@ import toast from "react-hot-toast";
 export default function SignUp() {
   const router = useRouter();
   const [user, setUser] = useState({
-    name: "",
+    f_name: "",
+    l_name: "",
     phone: "",
     password: "",
   });
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordMatch, setPasswordMatch] = useState(true);
 
   const onSignup = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/user/admin/signup", user);
+      const response = await axios.post("/api/user/signup", user);
       console.log("Signup Success", response.data);
       toast.success("Signup Success");
-      router.push("/login");
+      router.push("/sign-in");
     } catch (error: any) {
       console.log("Signup failed", error.response.data.error);
       toast.error(error.message);
@@ -32,9 +35,11 @@ export default function SignUp() {
 
   useEffect(() => {
     if (
+      user.f_name.length > 0 &&
+      user.l_name.length > 0 &&
       user.phone.length > 0 &&
-      user.password.length > 0 &&
-      user.name.length > 0
+      user.password.length > 0
+      // confirmPassword.length > 0
     ) {
       setButtonDisabled(false);
     } else {
@@ -53,7 +58,7 @@ export default function SignUp() {
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl ">
               Create an account
             </h1>
-            <form className="space-y-4 md:space-y-6" action="#">
+            <div className="space-y-4 md:space-y-6">
               <div>
                 <label
                   htmlFor="f_name"
@@ -65,6 +70,7 @@ export default function SignUp() {
                   type="text"
                   name="f_name"
                   id="f_name"
+                  onChange={(e) => setUser({ ...user, f_name: e.target.value })}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                 />
               </div>
@@ -79,6 +85,7 @@ export default function SignUp() {
                   type="text"
                   name="l_name"
                   id="l_name"
+                  onChange={(e) => setUser({ ...user, l_name: e.target.value })}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                 />
               </div>
@@ -93,6 +100,7 @@ export default function SignUp() {
                   type="tel"
                   name="phone"
                   id="phone"
+                  onChange={(e) => setUser({ ...user, phone: e.target.value })}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                   placeholder="9xxxxxxxxx"
                 />
@@ -108,6 +116,9 @@ export default function SignUp() {
                   type="password"
                   name="password"
                   id="password"
+                  onChange={(e) =>
+                    setUser({ ...user, password: e.target.value })
+                  }
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                 />
@@ -123,13 +134,25 @@ export default function SignUp() {
                   type="confirm-password"
                   name="confirm-password"
                   id="confirm-password"
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onBlur={() => {
+                    if (user.password == confirmPassword) {
+                      setPasswordMatch(true);
+                    } else {
+                      setPasswordMatch(false);
+                    }
+                  }}
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 "
                 />
+                {!passwordMatch && (
+                  <p className="text-sm text-red-500">Passwords do not match</p>
+                )}
               </div>
               <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                onClick={onSignup}
+                disabled={buttonDisabled || loading || !passwordMatch || confirmPassword.length == 0}
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-indigo-600"
               >
                 Create an account
               </button>
@@ -142,7 +165,7 @@ export default function SignUp() {
                   Login here
                 </a>
               </p>
-            </form>
+            </div>
           </div>
         </div>
       </div>

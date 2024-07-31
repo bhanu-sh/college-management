@@ -6,14 +6,16 @@ export default withAuth(
   function middleware(req) {
     console.log(req.nextauth.token);
     if (
+      req.nextUrl.pathname.startsWith("/colleges/add") &&
+      (req.nextauth.token?.role !== "CollegeAdmin")
+    ) {
+      return NextResponse.redirect(new URL("/unauthorized", req.url));
+    }
+    if (
       req.nextUrl.pathname.startsWith("/colleges") &&
       req.nextauth.token?.role !== "Admin"
     ) {
       return NextResponse.redirect(new URL("/unauthorized", req.url));
-    } else if (
-      (req.nextUrl.pathname.startsWith("/sign-in") || req.nextUrl.pathname.startsWith("/sign-up")) && req.nextauth.token
-    ) {
-      return NextResponse.redirect(new URL("/", req.url));
     }
   },
   {

@@ -48,17 +48,12 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["Student", "Staff", "Admin"],
+      enum: ["Student", "Staff", "CollegeAdmin", "Admin"],
       default: "Student",
     },
-    position: {
-      type: String,
-      enum: [
-        "Principal",
-        "Professor",
-        "Assistant Professor",
-        "Office Staff",
-      ],
+    isVerified: {
+      type: Boolean,
+      default: false,
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -74,16 +69,15 @@ const userSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "course",
     },
-    course_fee: {
-      type: Number,
-    },
-    bus_fee: {
-      type: Number,
-    },
-    con_fee: {
-      type: Number,
+    session_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "session",
     },
     total_fee: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "fee",
+    },
+    paid_fee: {
       type: Number,
     },
   },

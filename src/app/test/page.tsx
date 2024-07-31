@@ -25,57 +25,6 @@ const TestPage = () => {
     }
   };
 
-  //convert to json then upload to mongodb using api
-  // const handleUpload = async () => {
-  //   if (file) {
-  //     try {
-  //       setLoading(true);
-  //       toast.loading("Uploading staff members...");
-  //       const json = await excelToJson(file);
-
-  //       // Convert phone numbers and passwords to strings
-  //       const formattedJson = (json as any[]).map((staffMember: any) => ({
-  //         ...staffMember,
-  //         phone: staffMember.phone.toString(),
-  //         password: staffMember.password.toString(),
-  //       }));
-
-  //       console.log("Converted JSON:", formattedJson); // Log the formatted JSON
-
-  //       const res = await fetch("/api/staff/bulksignup", {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({ staff: formattedJson }), // Ensure the structure matches server expectations
-  //       });
-
-  //       if (!res.ok) {
-  //         const errorData = await res.json();
-  //         console.error("Error:", errorData);
-  //         // Handle error, possibly update state to reflect the error
-  //         return;
-  //       }
-
-  //       const data = await res.json();
-  //       console.log("Response data:", data); // Log the response data
-  //       toast.remove();
-  //       toast.success("Staff members uploaded successfully");
-  //       // Handle success, possibly update state to reflect successful upload
-  //     } catch (error) {
-  //       console.error("An error occurred:", error);
-  //       toast.remove();
-  //       toast.error("An error occurred while uploading staff members");
-  //       // Handle error, possibly update state to reflect the error
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   } else {
-  //     console.warn("No file selected");
-  //     // Handle case where no file is selected
-  //   }
-  // };
-
   const handleUpload = async () => {
     if (file) {
       try {
@@ -158,7 +107,26 @@ const TestPage = () => {
       {json && (
         <div className="mt-5">
           <h2 className="text-2xl font-bold text-red-500">JSON Data</h2>
-          <pre>{JSON.stringify(json, null, 2)}</pre>
+          <table className="table-auto w-full mt-5">
+            <thead className="bg-gray-200">
+              <tr className="text-left">
+                {Object.keys(json[0]).map((key) => (
+                  <th key={key}>{key}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {json.map((staff: any, index: number) => (
+                <tr key={index} className="border-b">
+                  {Object.values(staff).map((value: any, index: number) => (
+                    <td key={index} className="p-2">
+                      {value}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

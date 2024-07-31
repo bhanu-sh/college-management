@@ -9,37 +9,39 @@ connect()
 export async function POST(request: NextRequest) {
     try {
         const reqBody = await request.json()
-        const {phone, password, name} = reqBody
+        const {phone, password, f_name, l_name} = reqBody
 
         console.log(reqBody);
 
-        // Check if staff already exists
-        const staff = await User.findOne({phone})
+        // Check if User already exists
+        const user = await User.findOne({phone})
 
-        if (staff) {
-            return NextResponse.json({error: 'Staff already exists'}, {status: 400})
+        if (user) {
+            return NextResponse.json({error: 'User already exists'}, {status: 400})
         }
 
         // Hash password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
 
-        // Create new staff
-        const newStaff = new User({
-            f_name: name,
+        // Create new User
+        const newUser = new User({
+            f_name,
+            l_name,
             phone,
-            password: hashedPassword
+            password: hashedPassword,
+            role: 'CollegeAdmin'
         })
 
 
-        // Save staff
-        const savedStaff = await newStaff.save()
-        console.log(savedStaff);
+        // Save User
+        const savedUser = await newUser.save()
+        console.log(savedUser);
 
         return NextResponse.json({
-            message: 'Staff created successfully',
+            message: 'User created successfully',
             success: true,
-            savedStaff
+            savedUser
         })
 
     } catch (error: any) {
