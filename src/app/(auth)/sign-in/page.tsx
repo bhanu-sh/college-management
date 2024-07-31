@@ -37,31 +37,12 @@ export default function SignIn() {
   return (
     <div>
       {session ? (
-        <>
-          <h1>Signed in as {session.user?.f_name}</h1>
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded-md"
-            onClick={() => signOut()}
-          >
-            Sign out
-          </button>
-        </>
+        <div className="flex min-h-full flex-col justify-center items-center px-6 py-12 lg:px-8">
+          <p className="text-2xl">You are already signed in</p>
+          <button className="bg-orange-600 my-4 text-white px-3 py-1.5 rounded-md"
+          onClick={() => signOut()}>Sign out</button>
+        </div>
       ) : (
-        <>
-          <h1>Sign in</h1>
-          <button
-            onClick={() =>
-              signIn("credentials", {
-                phone: "7007795012",
-                password: "1234",
-              })
-            }
-          >
-            Sign in
-          </button>
-        </>
-      )}
-      <>
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -146,7 +127,7 @@ export default function SignIn() {
             </p>
           </div>
         </div>
-      </>
+      )}
     </div>
   );
 }

@@ -4,8 +4,6 @@ import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import Navbar from "./components/Navbar/Navbar";
 import AuthProvider from "@/contexts/authProvider";
-import Head from "next/head";
-
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +17,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  <div>
-    <Head>
-      <link rel="icon" href="/favicon.png" />
-    </Head>
-  </div>
   return (
     <html lang="en">
       <AuthProvider>

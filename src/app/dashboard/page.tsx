@@ -1,25 +1,16 @@
-"use client";
-
 import React from "react";
-import AdminDashboard from "./admin/AdminDashboard";
-import { useSession } from "next-auth/react";
-import StaffDashboard from "./staff/StaffDashboard";
+import Dashboard from "./Dashboard";
+import type { Metadata } from "next";
 
-const DashboardPage = () => {
-
-  const { data: session } = useSession();
-
-  if (!session) {
-    return <h1>Not Logged In</h1>;
-  }
-
-  return (
-    <div>
-      {session.user?.role === "Admin" && <AdminDashboard />}
-      {session.user?.role === "Staff" && <StaffDashboard />}
-      {session.user?.role === "Student" && <h1>Student Dashboard</h1>}
-    </div>
-  );
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "Streamlining Success in Higher Education",
 };
 
-export default DashboardPage;
+export default function DashboardPage() {
+  return (
+    <div>
+      <Dashboard />
+    </div>
+  );
+}
