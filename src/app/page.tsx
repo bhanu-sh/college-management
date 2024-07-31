@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-40 bg-white top-0 left-0">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-40 top-0 left-0">
         <div className="absolute top-0 right-0 md:right-40 md:top-32 z-1">
           <Image
             className=""
