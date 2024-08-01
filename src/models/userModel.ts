@@ -41,6 +41,9 @@ const userSchema = new mongoose.Schema(
     state: {
       type: String,
     },
+    pincode: {
+      type: String,
+    },
     password: {
       type: String,
       required: true,
@@ -76,30 +79,39 @@ const userSchema = new mongoose.Schema(
     },
     course_fee: {
       type: Number,
+      default: 0,
     },
     bus_fee: {
       type: Number,
+      default: 0,
     },
     hostel_fee: {
       type: Number,
+      default: 0,
     },
     exam_fee: {
       type: Number,
+      default: 0,
     },
     library_fee: {
       type: Number,
+      default: 0,
     },
     practical_fee: {
       type: Number,
+      default: 0,
     },
     security_fee: {
       type: Number,
+      default: 0,
     },
     con_fee: {
       type: Number,
+      default: 0,
     },
     paid_fee: {
       type: Number,
+      default: 0,
     },
   },
   {

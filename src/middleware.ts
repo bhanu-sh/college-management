@@ -32,7 +32,7 @@ export default withAuth(
 
 export const config = {
   matcher: [
-    "/dashboard",
+    "/dashboard/:path*",
     "/colleges/:path*",
     "/add/:path*",
     "/api/user/getall",

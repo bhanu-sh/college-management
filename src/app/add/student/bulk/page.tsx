@@ -4,8 +4,11 @@ import React from "react";
 import { excelToJson } from "@/helpers/excelToJson";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function AddStudents() {
+  const router = useRouter();
+
   const [file, setFile] = React.useState<File | null>(null);
   const [json, setJson] = React.useState<any>(null);
   const [preview, setPreview] = React.useState<boolean>(false);
@@ -56,6 +59,7 @@ export default function AddStudents() {
         console.log("Response data:", data); // Log the response data
         toast.remove();
         toast.success("Students uploaded successfully");
+        router.push("/dashboard/students");
         // Handle success, possibly update state to reflect successful upload
       } catch (error) {
         console.error("An error occurred:", error);

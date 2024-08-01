@@ -18,7 +18,7 @@ export default function AddCollege() {
     city: "",
     state: "",
     pincode: "",
-    userId: session?.user._id ,
+    userId: session?.user._id,
   });
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -61,6 +61,15 @@ export default function AddCollege() {
   return (
     <div className="flex flex-col w-96 mx-auto justify-center min-h-screen">
       <h1 className="text-4xl text-center font-bold mb-3">Add College</h1>
+      <hr />
+      <div className="flex justify-around items-center">
+        <p>Add using Excel?</p>
+        <Link className="" href={"/add/student/bulk"}>
+          <button className="p-2 border mt-3 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 hover:bg-gray-200">
+            Bulk Add
+          </button>
+        </Link>
+      </div>
       <hr />
       <label htmlFor="name">Name</label>
       <input

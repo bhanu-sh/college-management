@@ -40,12 +40,15 @@ export async function POST(request: NextRequest) {
         session_start_year,
         session_end_year,
         course_fee,
+        bus_fee,
+        hostel_fee,
         exam_fee,
         library_fee,
         college_id,
         practical_fee,
         security_fee,
         con_fee,
+        paid_fee,
       } = student;
 
       try {
@@ -102,11 +105,14 @@ export async function POST(request: NextRequest) {
           session_start_year,
           session_end_year,
           course_fee,
+          bus_fee,
+          hostel_fee,
           exam_fee,
           library_fee,
           practical_fee,
           security_fee,
           con_fee,
+          paid_fee,
         });
 
         // Save staff

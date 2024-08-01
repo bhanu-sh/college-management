@@ -74,7 +74,7 @@ export default function AddStaffs() {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold text-center text-red-500">Test Page</h1>
+      <h1 className="text-4xl font-bold text-center text-red-500">Add Staffs</h1>
       <div className="grid w-full max-w-xs items-center gap-1.5">
         <label className="text-sm text-gray-400 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Upload File

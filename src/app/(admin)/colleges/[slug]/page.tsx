@@ -38,11 +38,10 @@ export default function CollegePage({ params }: any) {
       setCollege(fetchedCollege);
 
       try {
-        const staffRes = await axios.get("/api/staff/getall");
-        const staffs = staffRes.data.data.filter(
-          (staff: any) => staff.college_id === fetchedCollege?._id
-        );
-        console.log(staffs);
+        const staffRes = await axios.post("/api/user/staff/getbycollege", {
+          college_id: fetchedCollege?._id,
+        });
+        const staffs = staffRes.data.data;
         setStaffs(staffs);
       } catch (error: any) {
         console.error("Error fetching staffs:", error);

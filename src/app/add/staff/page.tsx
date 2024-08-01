@@ -28,6 +28,7 @@ export default function AddStaff() {
   const onSignup = async () => {
     try {
       setLoading(true);
+      console.log("college id", session?.user.college_id);
       setStaff({ ...staff, college_id: session?.user.college_id });
       const response = await axios.post("/api/user/staff/add", staff);
       console.log("Staff Added Successfully", response.data);
@@ -62,6 +63,15 @@ export default function AddStaff() {
     <div className="flex flex-col w-96 mx-auto justify-center min-h-screen">
       <h1 className="text-4xl text-center font-bold mb-3">Add Staff</h1>
       <hr />
+      <div className="flex justify-around items-center">
+        <p>Add using Excel?</p>
+        <Link className="" href={"/add/staff/bulk"}>
+          <button className="p-2 border mt-3 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 hover:bg-gray-200">
+            Bulk Add
+          </button>
+        </Link>
+      </div>
+      <hr />
       <label htmlFor="f_name">First Name</label>
       <input
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
@@ -80,10 +90,10 @@ export default function AddStaff() {
         id="l_name"
         type="text"
         required
-        value={staff.f_name}
+        value={staff.l_name}
         placeholder="Last Name"
         onChange={(e) => {
-          setStaff({ ...staff, f_name: e.target.value });
+          setStaff({ ...staff, l_name: e.target.value });
         }}
       />
       <label htmlFor="phone">Phone</label>
@@ -98,7 +108,7 @@ export default function AddStaff() {
       />
       <label htmlFor="password">Password</label>
       <input
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        className="p-2 border border-gray-300 rounded-lg mb-1 focus:outline-none focus:border-gray-600 text-black"
         id="password"
         type="password"
         required
@@ -106,18 +116,20 @@ export default function AddStaff() {
         placeholder="Password"
         onChange={(e) => setStaff({ ...staff, password: e.target.value })}
       />
-      <label htmlFor="showPass">Show Password</label>
-      <input
-        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-        id="showPass"
-        type="checkbox"
-        onClick={(e) => {
-          const pass = document.getElementById("password");
-          if (pass) {
-            pass.setAttribute("type", e.target.checked ? "text" : "password");
-          }
-        }}
-      />
+      <div className="flex items-center p-0">
+        <label htmlFor="showPass">Show Password</label>
+        <input
+          className=" border border-gray-300 mt-4 ml-1 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+          id="showPass"
+          type="checkbox"
+          onClick={(e: any) => {
+            const pass = document.getElementById("password");
+            if (pass) {
+              pass.setAttribute("type", e.target.checked ? "text" : "password");
+            }
+          }}
+        />
+      </div>
 
       <label htmlFor="dob">Date of Birth</label>
       <input
