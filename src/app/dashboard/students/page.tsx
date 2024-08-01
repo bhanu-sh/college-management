@@ -276,17 +276,20 @@ export default function StudentsPage() {
                             View
                           </Link>
                         </button>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 mb-2">
+                        {/* <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 mb-2">
                           Edit
-                        </button>
-                        <button
-                          className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400"
-                          onClick={() => {
-                            deleteUser(user._id);
-                          }}
-                        >
-                          Delete
-                        </button>
+                        </button> */}
+                        {(session.user.role === "CollegeAdmin" ||
+                          session.user.role === "Admin") && (
+                          <button
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400"
+                            onClick={() => {
+                              deleteUser(user._id);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        )}
                       </td>
                     )}
                   </tr>

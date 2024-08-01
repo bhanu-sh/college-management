@@ -133,10 +133,7 @@ export default function CollegeDashboard() {
                         <h2 className="text-xl  font-semibold">Total Staffs</h2>
                         <h1 className="text-4xl">{staffs.length}</h1>
                         <div className="flex justify-between items-center mt-4 ">
-                          <Link
-                            href={`/dashboard/staffs`}
-                            className="mx-auto"
-                          >
+                          <Link href={`/dashboard/staffs`} className="mx-auto">
                             <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400">
                               View
                             </button>

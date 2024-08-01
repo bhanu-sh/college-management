@@ -41,7 +41,7 @@ export default function AddStaffs() {
 
         console.log("Converted JSON:", formattedJson); // Log the formatted JSON
 
-        const res = await axios.post("/api/user/staff/bulksignup", {
+        const res = await axios.post("/api/user/staff/bulkadd", {
           staff: formattedJson,
         });
 
