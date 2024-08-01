@@ -77,8 +77,14 @@ export default function StaffsPage() {
       Phone: item.phone,
       "Date of Birth": item.dob,
       Address:
-        item.address + ", " + item.city + ", " + item.state + " (" + item.pincode + ")",
-        
+        item.address +
+        ", " +
+        item.city +
+        ", " +
+        item.state +
+        " (" +
+        item.pincode +
+        ")",
     }));
     jsonToExcel(data, `staffs - ${new Date().toLocaleDateString()}`);
   };
@@ -142,11 +148,11 @@ export default function StaffsPage() {
             </button>
           </Link>
           <button
-              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400"
-              onClick={exportToExcel}
-            >
-              Export to Excel
-            </button>
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400"
+            onClick={exportToExcel}
+          >
+            Export to Excel
+          </button>
           <button
             className="px-3 py-1 bg-red-500 text-white rounded-md ml-2 disabled:opacity-50"
             disabled={selected.length === 0}
@@ -253,14 +259,11 @@ export default function StaffsPage() {
                       user.pincode +
                       ")"}
                   </td>
-                  {session && session.user?.role === "CollegeAdmin" && (
-                    <td className="px-6 py-3 flex flex-col">
-                      <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 mb-2">
-                        <Link href={`/dashboard/staffs/${user._id}`}>View</Link>
-                      </button>
-                      <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 mb-2">
-                        Edit
-                      </button>
+                  <td className="px-6 py-3 flex flex-col">
+                    <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 mb-2">
+                      <Link href={`/dashboard/staffs/${user._id}`}>View</Link>
+                    </button>
+                    {session && (session.user?.role === "CollegeAdmin" || session.user?.role === "Admin") && (
                       <button
                         className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400"
                         onClick={() => {
@@ -269,8 +272,8 @@ export default function StaffsPage() {
                       >
                         Delete
                       </button>
-                    </td>
-                  )}
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
