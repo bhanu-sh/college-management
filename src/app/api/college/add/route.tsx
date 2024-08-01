@@ -1,5 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig";
 import College from "@/models/collegeModel";
+import User from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
@@ -7,12 +8,16 @@ connect();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const { name, email, phone, address, city, state, pincode } = reqBody;
+    const { name, email, phone, address, city, state, pincode, userId } =
+      reqBody;
 
     console.log(reqBody);
 
     // Check if college already exists
     const college = await College.findOne({ name });
+
+    // Check if user exists
+    const user = await User.findById(userId);
 
     if (college) {
       return NextResponse.json(
@@ -49,6 +54,10 @@ export async function POST(request: NextRequest) {
     // Save College
     const savedCollege = await newCollege.save();
     console.log(savedCollege);
+
+    // Add college to user
+    user.college_id = savedCollege._id;
+    await user.save();
 
     return NextResponse.json({
       message: "College created successfully",

@@ -4,8 +4,11 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { signOut, useSession } from "next-auth/react";
 
 export default function AddCollege() {
+  const { data: session } = useSession();
+
   const router = useRouter();
   const [college, setCollege] = useState({
     name: "",
@@ -15,6 +18,7 @@ export default function AddCollege() {
     city: "",
     state: "",
     pincode: "",
+    userId: session?.user._id ,
   });
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,10 +26,14 @@ export default function AddCollege() {
   const onSignup = async () => {
     try {
       setLoading(true);
+      console.log("user id", session?.user._id);
+      setCollege({ ...college, userId: session?.user._id });
+      console.log("college", college.userId);
       const response = await axios.post("/api/college/add", college);
       console.log("College Added Successfully", response.data);
+      signOut();
       toast.success("College Added");
-      router.push("/colleges");
+      router.push("/dashboard");
     } catch (error: any) {
       console.log("Adding failed", error.response.data.error);
       toast.error(error.response.data.error);

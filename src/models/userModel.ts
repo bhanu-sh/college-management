@@ -65,17 +65,38 @@ const userSchema = new mongoose.Schema(
     aadhar: {
       type: String,
     },
-    course_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "course",
+    course: {
+      type: String,
     },
-    session_id: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "session",
+    session_start_year: {
+      type: String,
     },
-    total_fee: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "fee",
+    session_end_year: {
+      type: String,
+    },
+    course_fee: {
+      type: Number,
+    },
+    bus_fee: {
+      type: Number,
+    },
+    hostel_fee: {
+      type: Number,
+    },
+    exam_fee: {
+      type: Number,
+    },
+    library_fee: {
+      type: Number,
+    },
+    practical_fee: {
+      type: Number,
+    },
+    security_fee: {
+      type: Number,
+    },
+    con_fee: {
+      type: Number,
     },
     paid_fee: {
       type: Number,

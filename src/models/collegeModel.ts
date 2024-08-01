@@ -34,6 +34,14 @@ const collegeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    detailsLocked: {
+      type: Boolean,
+      default: false,
+    },
+    feesLocked: {
+      type: Boolean,
+      default: false,
+    },
     slug: {
       type: String,
       required: true,

@@ -43,11 +43,14 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token._id = user._id?.toString();
-        token.role = user.role;
+        token._id = "" + user._id;
         token.f_name = user.f_name;
+        token.l_name = user.l_name;
+        token.role = user.role;
+        token.phone = user.phone;
         token.avatar = user.avatar;
-        token.college_id = user.college_id?.toString();
+        token.isVerified = user.isVerified;
+        token.college_id = "" + user.college_id;
       }
 
       return token;
@@ -55,9 +58,13 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user._id = token._id;
-        session.user.role = token.role;
         session.user.f_name = token.f_name;
+        session.user.l_name = token.l_name;
+        session.user.role = token.role;
+        session.user.phone = token.phone;
+        session.user.isVerified = token.isVerified;
         session.user.avatar = token.avatar;
+        
         session.user.college_id = token.college_id;
       }
       return session;

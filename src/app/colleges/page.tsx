@@ -20,7 +20,6 @@ interface College {
 
 export default function CollegesPage() {
   const [colleges, setColleges] = useState([] as College[]);
-  const [user, setUser] = useState<null | { role: string }>(null);
   const [selected, setSelected] = useState<string[]>([]);
 
   const { data: session } = useSession();
@@ -29,15 +28,6 @@ export default function CollegesPage() {
     try {
       const res = await axios.get("/api/college/getall");
       setColleges(res.data.data);
-    } catch (error: any) {
-      console.log(error.message);
-    }
-  };
-
-  const getUser = async () => {
-    try {
-      const res = await axios.get("/api/admin/me");
-      setUser(res.data.data);
     } catch (error: any) {
       console.log(error.message);
     }
@@ -103,7 +93,6 @@ export default function CollegesPage() {
 
   useEffect(() => {
     getColleges();
-    getUser();
   }, []);
 
   useEffect(() => {

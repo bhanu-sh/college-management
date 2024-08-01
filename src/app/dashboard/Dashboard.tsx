@@ -9,16 +9,12 @@ import CollegeDashboard from "./college-admin/CollegeDashboard";
 export default function Dashboard() {
   const { data: session } = useSession();
 
-  if (!session) {
-    return <h1>Not Logged In</h1>;
-  }
-
   return (
     <div>
-      {session.user?.role === "Admin" && <AdminDashboard />}
-      {session.user?.role === "Staff" && <StaffDashboard />}
-      {session.user?.role === "Student" && <h1>Student Dashboard</h1>}
-      {session.user?.role === "CollegeAdmin" && <CollegeDashboard />}
+      {session?.user?.role === "Admin" && <AdminDashboard />}
+      {session?.user?.role === "Staff" && <StaffDashboard />}
+      {session?.user?.role === "Student" && <h1>Student Dashboard</h1>}
+      {session?.user?.role === "CollegeAdmin" && <CollegeDashboard />}
     </div>
   );
 }

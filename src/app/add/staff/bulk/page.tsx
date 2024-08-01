@@ -5,7 +5,7 @@ import { excelToJson } from "@/helpers/excelToJson";
 import toast from "react-hot-toast";
 import axios from "axios";
 
-const TestPage = () => {
+export default function AddStaffs() {
   const [file, setFile] = React.useState<File | null>(null);
   const [json, setJson] = React.useState<any>(null);
   const [preview, setPreview] = React.useState<boolean>(false);
@@ -132,5 +132,3 @@ const TestPage = () => {
     </div>
   );
 };
-
-export default TestPage;
