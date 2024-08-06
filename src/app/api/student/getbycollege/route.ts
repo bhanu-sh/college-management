@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     const users = await Student.find({
       $and: [{ college_id: college_id }, { role: "Student" }],
-    }).populate("fees");
+    });
     return NextResponse.json({ data: users });
   } catch (error: any) {
     console.error("Error finding staff:", error.message);

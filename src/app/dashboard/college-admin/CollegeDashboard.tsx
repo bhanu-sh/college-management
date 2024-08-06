@@ -93,7 +93,7 @@ export default function CollegeDashboard() {
 
   return (
     <div>
-      {session?.user.college_id === "" || error ? (
+      {session && session?.user.college_id === "" || error ? (
         <div className="flex flex-col items-center justify-center h-96">
           <h1 className="text-2xl font-semibold text-gray-500 mb-5">
             No College Added
