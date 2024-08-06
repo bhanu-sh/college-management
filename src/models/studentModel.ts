@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const userSchema = new mongoose.Schema(
+const studentSchema = new mongoose.Schema(
   {
     avatar: {
       type: String,
@@ -51,12 +51,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["Staff", "Officer", "Principal", "CollegeAdmin", "Admin"],
-      default: "Staff",
-    },
-    isVerified: {
-      type: Boolean,
-      default: false,
+      default: "Student",
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
@@ -68,12 +63,28 @@ const userSchema = new mongoose.Schema(
     aadhar: {
       type: String,
     },
+    course: {
+      type: String,
+    },
+    session_start_year: {
+      type: String,
+    },
+    session_end_year: {
+      type: String,
+    },
+    fees: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "fee",
+      },
+    ],
   },
   {
     timestamps: true,
   }
 );
 
-const User = mongoose.models.user || mongoose.model("user", userSchema);
+const Student =
+  mongoose.models.student || mongoose.model("student", studentSchema);
 
-export default User;
+export default Student;

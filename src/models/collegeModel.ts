@@ -34,11 +34,7 @@ const collegeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    detailsLocked: {
-      type: Boolean,
-      default: false,
-    },
-    feesLocked: {
+    lock: {
       type: Boolean,
       default: false,
     },
@@ -46,6 +42,12 @@ const collegeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    expenses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "expense",
+      },
+    ],
   },
   {
     timestamps: true,

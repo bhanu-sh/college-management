@@ -12,10 +12,10 @@ export async function POST(request: NextRequest) {
     if (!college) {
       return NextResponse.json({ error: "College not found" }, { status: 404 });
     }
-    college.detailsLocked = !college.detailsLocked;
-    const status = college.detailsLocked ? "locked" : "unlocked";
+    college.lock = !college.lock;
+    const status = college.lock ? "locked" : "unlocked";
     await college.save();
-    return NextResponse.json({ message: "Details " + status + " successfully" });
+    return NextResponse.json({ message: status + " successfully" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

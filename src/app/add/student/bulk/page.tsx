@@ -44,7 +44,7 @@ export default function AddStudents() {
 
         console.log("Converted JSON:", formattedJson); // Log the formatted JSON
 
-        const res = await axios.post("/api/user/student/bulkadd", {
+        const res = await axios.post("/api/student/bulkadd", {
           user: formattedJson,
         });
 

@@ -1,5 +1,5 @@
 import { connect } from "@/dbConfig/dbConfig";
-import User from "@/models/userModel";
+import Fee from "@/models/feeModel";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
@@ -7,38 +7,26 @@ connect();
 export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const {
-      userId,
-      f_name,
-      l_name,
-      father_name,
-      mother_name,
-      email,
-      phone,
-      dob,
-      gender,
-      address,
-      city,
-      state,
-      pincode,
-      roll_no,
-      aadhar,
-      course,
-      session_start_year,
-      session_end_year,
-    } = reqBody;
+    const { id, name, description, amount } = reqBody;
 
     console.log(reqBody);
 
-    // Check if User exists
-    const user = await User.findOne({ _id: userId });
+    // Check if Fee exists
+    const fee = await Fee.findOne({ _id: id });
 
-    if (!user) {
+    if (!fee) {
       return NextResponse.json({ error: "User not found" }, { status: 400 });
     }
 
     // Update User
-    const updated = await User.updateOne({ _id: userId }, {});
+    const updated = await Fee.updateOne(
+      { _id: id },
+      {
+        name: name !== "" ? name : fee.name,
+        description: description !== "" ? description : fee.description,
+        amount: amount !== "" ? amount : fee.amount,
+      }
+    );
 
     console.log(updated);
 

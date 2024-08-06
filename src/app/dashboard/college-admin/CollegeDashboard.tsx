@@ -3,6 +3,8 @@ import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import CountCard from "@/app/components/CountCard";
+import CollegeLock from "@/app/components/CollegeLock";
 
 interface College {
   name: string;
@@ -42,7 +44,7 @@ export default function CollegeDashboard() {
   const fetchStudents = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`/api/user/student/getbycollege`, {
+      const response = await axios.post(`/api/student/getbycollege`, {
         college_id: session?.user.college_id,
       });
       setStudents(response.data.data);
@@ -53,19 +55,12 @@ export default function CollegeDashboard() {
     setLoading(false);
   };
 
-  const lockDetails = async (type: string) => {
+  const lockDetails = async () => {
     try {
-      if (type === "details") {
-        const response = await axios.post(`/api/college/lockdetails`, {
-          college_id: session?.user.college_id,
-        });
-        console.log("Details Locked", response.data);
-      } else {
-        const response = await axios.post(`/api/college/lockfees`, {
-          college_id: session?.user.college_id,
-        });
-        console.log("Fees Locked", response.data);
-      }
+      const response = await axios.post(`/api/college/lock`, {
+        college_id: session?.user.college_id,
+      });
+      console.log("Details Locked", response.data);
     } catch (error: any) {
       console.log("Error", error.response.data.error);
     } finally {
@@ -128,79 +123,23 @@ export default function CollegeDashboard() {
                     {college?.name}
                   </h1>
                   <div className="flex flex-wrap justify-around">
-                    <div className="w-80 p-4 bg-white rounded-lg shadow-md my-5">
-                      <div className="p-4 text-center">
-                        <h2 className="text-xl  font-semibold">Total Staffs</h2>
-                        <h1 className="text-4xl">{staffs.length}</h1>
-                        <div className="flex justify-between items-center mt-4 ">
-                          <Link href={`/dashboard/staffs`} className="mx-auto">
-                            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400">
-                              View
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="w-80 p-4 bg-white rounded-lg shadow-md my-5">
-                      <div className="p-4 text-center">
-                        <h2 className="text-xl  font-semibold">
-                          Total Students
-                        </h2>
-                        <h1 className="text-4xl">{students.length}</h1>
-                        <div className="flex justify-between items-center mt-4 ">
-                          <Link
-                            href={`/dashboard/students`}
-                            className="mx-auto"
-                          >
-                            <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400">
-                              View
-                            </button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
+                    <CountCard
+                      title="Students"
+                      count={students.length}
+                      link="/dashboard/students"
+                    />
+                    <CountCard
+                      title="Staffs"
+                      count={staffs.length}
+                      link="/dashboard/staffs"
+                    />
                   </div>
-                  <div>
+                  <hr />
+                  <div className="flex justify-center gap-8 items-end">
                     <h2 className="text-3xl font-bold">Lock Status:</h2>
-                    <div className="flex justify-around flex-col md:flex-row">
-                      <div className="flex sm:w-1/2 md:w-80 justify-between">
-                        <p className="text-xl font-semibold">Student Details</p>
-                        {!college?.detailsLocked ? (
-                          <button
-                            onClick={() => lockDetails("details")}
-                            className="bg-green-500 text-white px-2 hover:bg-green-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
-                          >
-                            Unlocked
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => lockDetails("details")}
-                            className="bg-red-500 text-white px-2 hover:bg-red-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
-                          >
-                            Locked
-                          </button>
-                        )}
-                      </div>
-                      <div className="flex sm:w-1/2 md:w-80 justify-between">
-                        <p className="text-xl font-semibold">Fee Details</p>
-                        {!college?.feesLocked ? (
-                          <button
-                            onClick={() => lockDetails("fee")}
-                            className="bg-green-500 text-white px-2 hover:bg-green-600 rounded-md focus:outline-none focus:ring-2 focus:ring-green-400"
-                          >
-                            Unlocked
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => lockDetails("fee")}
-                            className="bg-red-500 text-white px-2 hover:bg-red-600 rounded-md focus:outline-none focus:ring-2 focus:ring-red-400"
-                          >
-                            Locked
-                          </button>
-                        )}
-                      </div>
-                    </div>
+                    <CollegeLock collegeId={session?.user.college_id || ""} />
                   </div>
+                  <hr />
                 </>
               )}
             </>

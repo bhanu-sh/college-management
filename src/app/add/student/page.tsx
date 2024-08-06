@@ -4,21 +4,31 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
-export default function AddCollege() {
+export default function AddStudent() {
   const { data: session } = useSession();
 
   const router = useRouter();
-  const [college, setCollege] = useState({
-    name: "",
+  const [student, setStudent] = useState({
+    f_name: "",
+    l_name: "",
+    father_name: "",
+    mother_name: "",
     email: "",
     phone: "",
+    dob: "",
+    gender: "",
     address: "",
     city: "",
     state: "",
     pincode: "",
-    userId: session?.user._id,
+    roll: "",
+    aadhar: "",
+    course: "",
+    session_start_year: "",
+    session_end_year: "",
+    college_id: session?.user.college_id,
   });
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,17 +36,13 @@ export default function AddCollege() {
   const onSignup = async () => {
     try {
       setLoading(true);
-      console.log("user id", session?.user._id);
-      setCollege({ ...college, userId: session?.user._id });
-      console.log("college", college.userId);
-      const response = await axios.post("/api/college/add", college);
-      console.log("College Added Successfully", response.data);
-      signOut();
-      toast.success("College Added");
+      setStudent({ ...student, college_id: session?.user.college_id });
+      const response = await axios.post("/api/student/add", student);
+      console.log("Student Added Successfully", response.data);
+      toast.success("Student Added");
       router.push("/dashboard");
     } catch (error: any) {
       console.log("Adding failed", error.response.data.error);
-      toast.error(error.response.data.error);
     } finally {
       setLoading(false);
     }
@@ -44,19 +50,28 @@ export default function AddCollege() {
 
   useEffect(() => {
     if (
-      college.name.length > 0 &&
-      college.email.length > 0 &&
-      college.phone.length > 0 &&
-      college.address.length > 0 &&
-      college.city.length > 0 &&
-      college.state.length > 0 &&
-      college.pincode.length > 0
+      student.f_name.length > 0 &&
+      student.l_name.length > 0 &&
+      student.father_name.length > 0 &&
+      student.mother_name.length > 0 &&
+      student.email.length > 0 &&
+      student.phone.length > 0 &&
+      student.dob.length > 0 &&
+      student.gender.length > 0 &&
+      student.address.length > 0 &&
+      student.city.length > 0 &&
+      student.state.length > 0 &&
+      student.pincode.length > 0 &&
+      student.aadhar.length > 0 &&
+      student.course.length > 0 &&
+      student.session_start_year.length > 0 &&
+      student.session_end_year.length > 0
     ) {
       setButtonDisabled(false);
     } else {
       setButtonDisabled(true);
     }
-  }, [college]);
+  }, [student]);
 
   return (
     <div className="flex flex-col w-96 mx-auto justify-center min-h-screen">
@@ -71,16 +86,52 @@ export default function AddCollege() {
         </Link>
       </div>
       <hr />
-      <label htmlFor="name">Name</label>
+      <label htmlFor="name">First Name</label>
       <input
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
         id="name"
         type="text"
         required
-        value={college.name}
+        value={student.f_name}
         placeholder="Name"
         onChange={(e) => {
-          setCollege({ ...college, name: e.target.value });
+          setStudent({ ...student, f_name: e.target.value });
+        }}
+      />
+      <label htmlFor="name">Last Name</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="name"
+        type="text"
+        required
+        value={student.l_name}
+        placeholder="Name"
+        onChange={(e) => {
+          setStudent({ ...student, l_name: e.target.value });
+        }}
+      />
+      <label htmlFor="father_name">Father&apos;s Name</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="father_name"
+        type="text"
+        required
+        value={student.father_name}
+        placeholder="Father's Name"
+        onChange={(e) => {
+          setStudent({ ...student, father_name: e.target.value });
+        }}
+      />
+      <label htmlFor="mother_name">Mother&apos;s Name</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="mother_name"
+        type="text"
+        required
+        value={student.mother_name}
+        placeholder="Mother's Name"
+        onChange={(e) => {
+          setStudent({ ...student, mother_name: e.target.value });
         }}
       />
       <label htmlFor="email">Email</label>
@@ -89,9 +140,9 @@ export default function AddCollege() {
         id="email"
         type="email"
         required
-        value={college.email}
+        value={student.email}
         placeholder="Email"
-        onChange={(e) => setCollege({ ...college, email: e.target.value })}
+        onChange={(e) => setStudent({ ...student, email: e.target.value })}
       />
       <label htmlFor="phone">Phone</label>
       <input
@@ -99,19 +150,42 @@ export default function AddCollege() {
         id="phone"
         type="text"
         required
-        value={college.phone}
+        value={student.phone}
         placeholder="Phone"
-        onChange={(e) => setCollege({ ...college, phone: e.target.value })}
+        onChange={(e) => setStudent({ ...student, phone: e.target.value })}
       />
+      <label htmlFor="dob">Date of Birth</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="dob"
+        type="date"
+        required
+        value={student.dob}
+        placeholder="Date of Birth"
+        onChange={(e) => setStudent({ ...student, dob: e.target.value })}
+      />
+      <label htmlFor="gender">Gender</label>
+      <select
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="gender"
+        required
+        value={student.gender}
+        onChange={(e) => setStudent({ ...student, gender: e.target.value })}
+      >
+        <option value="">Select</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
       <label htmlFor="address">Address</label>
       <input
         className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
         id="address"
         type="text"
         required
-        value={college.address}
+        value={student.address}
         placeholder="Address"
-        onChange={(e) => setCollege({ ...college, address: e.target.value })}
+        onChange={(e) => setStudent({ ...student, address: e.target.value })}
       />
       <label htmlFor="city">City</label>
       <input
@@ -119,9 +193,9 @@ export default function AddCollege() {
         id="city"
         type="text"
         required
-        value={college.city}
+        value={student.city}
         placeholder="City"
-        onChange={(e) => setCollege({ ...college, city: e.target.value })}
+        onChange={(e) => setStudent({ ...student, city: e.target.value })}
       />
       <label htmlFor="state">State</label>
       <input
@@ -129,9 +203,9 @@ export default function AddCollege() {
         id="state"
         type="text"
         required
-        value={college.state}
+        value={student.state}
         placeholder="State"
-        onChange={(e) => setCollege({ ...college, state: e.target.value })}
+        onChange={(e) => setStudent({ ...student, state: e.target.value })}
       />
       <label htmlFor="pincode">Pincode</label>
       <input
@@ -139,9 +213,62 @@ export default function AddCollege() {
         id="pincode"
         type="text"
         required
-        value={college.pincode}
+        value={student.pincode}
         placeholder="Pincode"
-        onChange={(e) => setCollege({ ...college, pincode: e.target.value })}
+        onChange={(e) => setStudent({ ...student, pincode: e.target.value })}
+      />
+      <label htmlFor="roll">Roll Number</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="roll"
+        type="text"
+        value={student.roll}
+        placeholder="Roll Number"
+        onChange={(e) => setStudent({ ...student, roll: e.target.value })}
+      />
+      <label htmlFor="aadhar">Aadhar Number</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="aadhar"
+        type="text"
+        required
+        value={student.aadhar}
+        placeholder="Aadhar Number"
+        onChange={(e) => setStudent({ ...student, aadhar: e.target.value })}
+      />
+      <label htmlFor="course">Course</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="course"
+        type="text"
+        required
+        value={student.course}
+        placeholder="Course"
+        onChange={(e) => setStudent({ ...student, course: e.target.value })}
+      />
+      <label htmlFor="session_start_year">Session Start Year</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="session_start_year"
+        type="text"
+        required
+        value={student.session_start_year}
+        placeholder="Session Start Year"
+        onChange={(e) =>
+          setStudent({ ...student, session_start_year: e.target.value })
+        }
+      />
+      <label htmlFor="session_end_year">Session End Year</label>
+      <input
+        className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
+        id="session_end_year"
+        type="text"
+        required
+        value={student.session_end_year}
+        placeholder="Session End Year"
+        onChange={(e) =>
+          setStudent({ ...student, session_end_year: e.target.value })
+        }
       />
       <hr />
       <button

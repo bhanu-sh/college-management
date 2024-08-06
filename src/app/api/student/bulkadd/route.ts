@@ -1,5 +1,5 @@
 import { connect } from "@/dbConfig/dbConfig";
-import User from "@/models/userModel";
+import Student from "@/models/studentModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
@@ -8,12 +8,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const reqBody = await request.json();
-    console.log("Request body:", reqBody); // Log the request body
+    console.log("Request body:", reqBody);
     const { user } = reqBody;
 
     if (!Array.isArray(user) || user.length === 0) {
       return NextResponse.json(
-        { error: "Invalid or empty staff array provided" },
+        { error: "Invalid or empty Student array provided" },
         { status: 400 }
       );
     }
@@ -34,21 +34,12 @@ export async function POST(request: NextRequest) {
         city,
         state,
         password,
-        roll_no,
+        roll,
         aadhar,
         course,
         session_start_year,
         session_end_year,
-        course_fee,
-        bus_fee,
-        hostel_fee,
-        exam_fee,
-        library_fee,
         college_id,
-        practical_fee,
-        security_fee,
-        con_fee,
-        paid_fee,
       } = student;
 
       try {
@@ -68,13 +59,13 @@ export async function POST(request: NextRequest) {
         }
 
         // Check if student already exists
-        const staffExist = await User.findOne({ phone });
+        const studentExist = await Student.findOne({ phone });
 
-        if (staffExist) {
+        if (studentExist) {
           results.push({
             phone,
             status: "error",
-            message: "Staff already exists",
+            message: "Student already exists",
           });
           continue;
         }
@@ -83,8 +74,8 @@ export async function POST(request: NextRequest) {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Create new staff
-        const newStaff = new User({
+        // Create new student
+        const newStudent = new Student({
           f_name,
           l_name,
           father_name,
@@ -99,29 +90,20 @@ export async function POST(request: NextRequest) {
           college_id,
           password: hashedPassword,
           role: "Student",
-          roll_no,
+          roll_no: roll,
           aadhar,
           course,
           session_start_year,
           session_end_year,
-          course_fee,
-          bus_fee,
-          hostel_fee,
-          exam_fee,
-          library_fee,
-          practical_fee,
-          security_fee,
-          con_fee,
-          paid_fee,
         });
 
-        // Save staff
-        const savedStaff = await newStaff.save();
+        // Save Student
+        const savedStudent = await newStudent.save();
         results.push({
           phone,
           status: "success",
-          message: "Staff created successfully",
-          savedStaff,
+          message: "Student created successfully",
+          savedStudent,
         });
       } catch (error: any) {
         if (error instanceof Error) {
@@ -137,7 +119,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      message: "Staff processing completed",
+      message: "Student processing completed",
       results,
     });
   } catch (error: any) {

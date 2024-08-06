@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const expenseSchema = new mongoose.Schema(
+const feeSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -13,14 +13,14 @@ const expenseSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    type: {
-      type: String,
-      enum: ["sent", "received"],
-      required: true,
-    },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "college",
+      required: true,
+    },
+    student_id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "student",
       required: true,
     },
     date: {
@@ -33,7 +33,6 @@ const expenseSchema = new mongoose.Schema(
   }
 );
 
-const Expense =
-  mongoose.models.expense || mongoose.model("expense", expenseSchema);
+const Fee = mongoose.models.fee || mongoose.model("fee", feeSchema);
 
-export default Expense;
+export default Fee;

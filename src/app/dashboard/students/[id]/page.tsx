@@ -17,24 +17,13 @@ export default function StudentPage({ params }: any) {
   const [total, setTotal] = useState<Number>(0);
   const [feeInput, setFeeInput] = useState(false);
   const [feeDataInput, setFeeDataInput] = useState(false);
-  const [feeData, setFeeData] = useState({
-    userId: id,
-    course_fee: "",
-    bus_fee: "",
-    hostel_fee: "",
-    exam_fee: "",
-    library_fee: "",
-    practical_fee: "",
-    security_fee: "",
-    con_fee: "",
-    paid_fee: "",
-  });
+  const [feeData, setFeeData] = useState<any | null>(null);
   const [fee, setFee] = useState(0);
 
   const getStudent = async (id: string) => {
     setLoading(true);
     try {
-      const res = await axios.get(`/api/user/getbyid`, {
+      const res = await axios.get(`/api/student/getbyid`, {
         params: { id },
       });
       const fetchedStudent = res.data.data;
@@ -53,6 +42,19 @@ export default function StudentPage({ params }: any) {
       setError(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const getFeeData = async (id: string) => {
+    try {
+      const res = await axios.post(`/api/fee/getbystudent`, {
+        student_id: id,
+      });
+      setFeeData(res.data.data);
+      console.log("Fee", res.data);
+    } catch (error: any) {
+      console.error("Error fetching fee data:", error);
+      console.log(error.message);
     }
   };
 
@@ -87,6 +89,7 @@ export default function StudentPage({ params }: any) {
 
   useEffect(() => {
     getStudent(id);
+    getFeeData(id);
   }, [id]);
 
   return (
@@ -137,11 +140,15 @@ export default function StudentPage({ params }: any) {
                 <p className="py-2 text-1xl">
                   Course Fee: &#8377; {student.course_fee}
                 </p>
-                <p className="py-2 text-1xl">Bus Fee: &#8377; {student.bus_fee}</p>
+                <p className="py-2 text-1xl">
+                  Bus Fee: &#8377; {student.bus_fee}
+                </p>
                 <p className="py-2 text-1xl">
                   Hostel Fee: &#8377; {student.hostel_fee}
                 </p>
-                <p className="py-2 text-1xl">Exam Fee: &#8377; {student.exam_fee}</p>
+                <p className="py-2 text-1xl">
+                  Exam Fee: &#8377; {student.exam_fee}
+                </p>
                 <p className="py-2 text-1xl">
                   Library Fee: &#8377; {student.library_fee}
                 </p>
@@ -151,11 +158,18 @@ export default function StudentPage({ params }: any) {
                 <p className="py-2 text-1xl">
                   Security Fee: &#8377; {student.security_fee}
                 </p>
-                <p className="py-2 text-1xl">Con: (-) &#8377; {student.con_fee}</p>
-                <p className="py-2 text-2xl text-red-600 font-semibold">Total Fee: &#8377; {total.toString()}</p>
-                <p className="py-2 text-2xl text-green-600 font-semibold">Paid Fee: (-) &#8377; {student.paid_fee}</p>
+                <p className="py-2 text-1xl">
+                  Con: (-) &#8377; {student.con_fee}
+                </p>
+                <p className="py-2 text-2xl text-red-600 font-semibold">
+                  Total Fee: &#8377; {total.toString()}
+                </p>
+                <p className="py-2 text-2xl text-green-600 font-semibold">
+                  Paid Fee: (-) &#8377; {student.paid_fee}
+                </p>
                 <p className="py-2 text-2xl text-red-600 font-bold">
-                  Remaining Fee: &#8377; {Number(total) - Number(student.paid_fee)}
+                  Remaining Fee: &#8377;{" "}
+                  {Number(total) - Number(student.paid_fee)}
                 </p>
               </div>
             </div>
