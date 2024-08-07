@@ -1,5 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig";
 import Student from "@/models/studentModel";
+import Fee from "@/models/feeModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
@@ -69,6 +70,31 @@ export async function POST(request: NextRequest) {
     });
 
     const savedStudent = await newStudent.save();
+
+    // Create new Fee
+    const newCourseFee = new Fee({
+      name: "Course Fee",
+      description: "Course Fee",
+      amount: 0,
+      type: "fee",
+      college_id,
+      student_id: savedStudent._id,
+    });
+
+    const newPaidFee = new Fee({
+      name: "Paid Fee",
+      description: "Paid Fee",
+      amount: 0,
+      type: "received",
+      college_id,
+      student_id: savedStudent._id,
+    });
+
+    await newCourseFee.save();
+    await newPaidFee.save();
+
+    savedStudent.fees.push(newCourseFee._id, newPaidFee._id);
+    await savedStudent.save();
 
     return NextResponse.json({
       message: "Student addedd successfully",

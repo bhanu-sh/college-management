@@ -1,18 +1,35 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { excelToJson } from "@/helpers/excelToJson";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function AddStudents() {
   const router = useRouter();
 
-  const [file, setFile] = React.useState<File | null>(null);
-  const [json, setJson] = React.useState<any>(null);
-  const [preview, setPreview] = React.useState<boolean>(false);
-  const [loading, setLoading] = React.useState<boolean>(false);
+  const { data: session } = useSession();
+
+  const [file, setFile] = useState<File | null>(null);
+  const [collegeLock, setCollegeLock] = useState(false);
+  const [json, setJson] = useState<any>(null);
+  const [preview, setPreview] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const getCollegeLock = async () => {
+    try {
+      console.log("College ID", session?.user.college_id);
+      const response = await axios.post("/api/college/getbyid", {
+        college_id: session?.user.college_id,
+      });
+      console.log("College Lock", response.data);
+      setCollegeLock(response.data.lock);
+    } catch (error: any) {
+      console.log("Getting lock failed", error.response);
+    }
+  };
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {

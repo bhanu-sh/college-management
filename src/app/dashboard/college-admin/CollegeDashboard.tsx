@@ -126,12 +126,12 @@ export default function CollegeDashboard() {
                     <CountCard
                       title="Students"
                       count={students.length}
-                      link="/dashboard/students"
+                      link="/students"
                     />
                     <CountCard
                       title="Staffs"
                       count={staffs.length}
-                      link="/dashboard/staffs"
+                      link="/staffs"
                     />
                   </div>
                   <hr />

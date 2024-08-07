@@ -13,6 +13,15 @@ const feeSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    type: {
+      type: String,
+      enum: ["received", "fee"],
+      required: true,
+    },
+    method: {
+      type: String,
+      enum: ["cash", "cheque", "online"],
+    },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "college",

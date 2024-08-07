@@ -1,5 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig";
 import Student from "@/models/studentModel";
+import Fee from "@/models/feeModel";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
@@ -31,6 +32,9 @@ export async function POST(request: NextRequest) {
           });
           continue;
         }
+
+        //delete fee records of the student
+        await Fee.deleteMany({ student_id: user_id });
 
         await Student.deleteOne({ _id: user_id });
 

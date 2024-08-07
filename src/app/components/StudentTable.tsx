@@ -287,7 +287,7 @@ export default function StudentTable({
 
                   <td className="px-6 py-3 flex flex-col">
                     <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 mb-2">
-                      <Link href={`/dashboard/students/${user._id}`}>View</Link>
+                      <Link href={`/students/${user._id}`}>View</Link>
                     </button>
                     {(role === "CollegeAdmin" || role === "Admin") && (
                       <button
