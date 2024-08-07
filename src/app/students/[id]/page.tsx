@@ -218,15 +218,19 @@ export default function StudentPage({ params }: any) {
                     <h1 className="text-2xl font-semibold underline text-center">
                       Fee Details
                     </h1>
-                    {feeData.map((fee: any) => (
+                    {feeData && (
                       <>
-                        {fee.type === "fee" && (
-                          <p className="py-2 text-1xl" key={fee._id}>
-                            {fee.name}: &#8377; {fee.amount}
-                          </p>
-                        )}
+                        {feeData.map((fee: any) => (
+                          <>
+                            {fee.type === "fee" && (
+                              <p className="py-2 text-1xl" key={fee._id}>
+                                {fee.name}: &#8377; {fee.amount}
+                              </p>
+                            )}
+                          </>
+                        ))}
                       </>
-                    ))}
+                    )}
                     <hr />
                     <p className="py-2 text-1xl font-semibold">
                       Total Fee: &#8377; {Number(total)}
