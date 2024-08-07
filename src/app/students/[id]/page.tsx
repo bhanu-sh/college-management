@@ -5,6 +5,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+
 import {
   Dialog,
   DialogContent,
@@ -20,10 +21,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { useSession } from "next-auth/react";
+import Loader from "@/app/components/Loader";
 
 export default function StudentPage({ params }: any) {
   const { id } = params;
@@ -42,14 +55,14 @@ export default function StudentPage({ params }: any) {
     amount: "",
     type: "fee",
     student_id: id,
-    college_id: session?.user.college_id,
+    college_id: "",
   });
   const [payFee, setPayFee] = useState({
     name: "Fee Payment",
     amount: "",
     method: "cash",
     student_id: id,
-    college_id: session?.user.college_id,
+    college_id: "",
   });
 
   const getStudent = async (id: string) => {
@@ -83,11 +96,27 @@ export default function StudentPage({ params }: any) {
     }
   };
 
+  const updateProfile = async () => {
+    try {
+      const res = await axios.put(`/api/student/edit`, student);
+      console.log("Student Updated", res.data);
+      toast.success("Profile Updated");
+      getStudent(id);
+    } catch (error: any) {
+      console.error("Error updating student:", error);
+      toast.error("Error updating profile");
+    }
+  };
+
   const addFee = async () => {
     try {
-      const res = await axios.post("/api/fee/add", addedFee);
+      const updatedFee = { ...addedFee, college_id: student.college_id };
+      setAddedFee(updatedFee);
+      console.log("Added Fee", updatedFee);
+      const res = await axios.post("/api/fee/add", updatedFee);
       console.log("Fee Added", res.data);
       toast.success("Fee Added");
+      setAddedFee({ ...addedFee, name: "", description: "", amount: "" });
       getStudent(id);
     } catch (error: any) {
       console.error("Error adding fee:", error);
@@ -97,10 +126,13 @@ export default function StudentPage({ params }: any) {
 
   const payingFee = async () => {
     try {
-      setPayFee({ ...payFee, college_id: session?.user.college_id });
-      const res = await axios.post("/api/fee/pay", payFee);
+      const updatedPayFee = { ...payFee, college_id: student.college_id };
+      setPayFee(updatedPayFee);
+      console.log("Paying Fee", updatedPayFee);
+      const res = await axios.post("/api/fee/pay", updatedPayFee);
       console.log("Fee Paid", res.data);
       toast.success("Fee Paid");
+      setPayFee({ ...payFee, amount: "" });
       getStudent(id);
     } catch (error: any) {
       console.error("Error paying fee:", error);
@@ -113,182 +145,426 @@ export default function StudentPage({ params }: any) {
   }, [id]);
 
   return (
-    <div className="flex flex-col justify-center">
-      <h1 className="text-3xl font-semibold text-center mt-8">
-        Student Profile
-      </h1>
-      {loading && <p>Loading...</p>}
+    <>
+      {loading && <Loader />}
       {error && <p>Error fetching student</p>}
-      {student && (
-        <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
-            <div className="md:flex flex-col mt-12 hidden">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                width={200}
-                height={200}
-                src={student.avatar}
-                alt="profile-pic"
-                className="w-48 h-48 rounded-full"
-              />
-            </div>
-            <div className="flex flex-col border-b-2 sm:border-b-0 sm:border-r-2 mt-12">
-              <p className="py-2 text-1xl">
-                Name: {student.f_name} {student.l_name}
-              </p>
-              <p className="py-2 text-1xl">Roll No: {student.roll_no}</p>
-              <p className="py-2 text-1xl">Course: {student.course}</p>
-              <p className="py-2 text-1xl">
-                Session: {student.session_start_year} -{" "}
-                {student.session_end_year}
-              </p>
-              <p className="py-2 text-1xl">
-                Father Name: {student.father_name}
-              </p>
-              <p className="py-2 text-1xl">
-                Mother Name: {student.mother_name}
-              </p>
-              <div className="flex">
-                <p className="py-2 text-1xl">Contact:</p>
-
-                <div className="pl-12 pt-1 text-1xl flex flex-col">
-                  <Link href={`mailto:${student.email}`} className="py-2">
-                    Email: {student.email}
-                  </Link>
-                  <Link href={`tel:${student.phone}`} className="py-2">
-                    Phone: {student.phone}
-                  </Link>
-                  <p className="py-2">
-                    Address: {student.address}, {student.city}, {student.state}{" "}
-                    ({student.pincode})
+      {session && student && (
+        <div className="flex flex-col justify-center">
+          <h1 className="text-3xl font-semibold text-center mt-8">
+            Student Profile
+          </h1>
+          {loading && <p>Loading...</p>}
+          {error && <p>Error fetching student</p>}
+          {student && (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+                <div className="md:flex flex-col mt-12 justify-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={student.avatar}
+                    alt="profile-pic"
+                    className="w-40 h-40 sm:w-48 sm:h-48 rounded-full mx-auto"
+                  />
+                </div>
+                <div className="flex flex-col border-b-2 sm:border-b-0 sm:border-r-2 mt-4">
+                  <h1 className="text-2xl font-semibold underline text-center">
+                    Student Details
+                  </h1>
+                  <p className="py-2 text-1xl">
+                    Name: {student.f_name} {student.l_name}
                   </p>
+                  <p className="py-2 text-1xl">Roll No: {student.roll_no}</p>
+                  <p className="py-2 text-1xl">Course: {student.course}</p>
+                  <p className="py-2 text-1xl">
+                    Session: {student.session_start_year} -{" "}
+                    {student.session_end_year}
+                  </p>
+                  <p className="py-2 text-1xl">
+                    Father Name: {student.father_name}
+                  </p>
+                  <p className="py-2 text-1xl">
+                    Mother Name: {student.mother_name}
+                  </p>
+                  <div className="flex">
+                    <p className="py-2 text-1xl">Contact:</p>
+
+                    <div className="pl-12 pt-1 text-1xl flex flex-col">
+                      <Link href={`mailto:${student.email}`} className="py-2">
+                        Email: {student.email}
+                      </Link>
+                      <Link href={`tel:${student.phone}`} className="py-2">
+                        Phone: {student.phone}
+                      </Link>
+                      <p className="py-2">
+                        Address: {student.address}, {student.city},{" "}
+                        {student.state} ({student.pincode})
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="sm:pl-8">
+                  <div className="flex flex-col mt-4">
+                    <h1 className="text-2xl font-semibold underline text-center">
+                      Fee Details
+                    </h1>
+                    {student.fees.map((fee: any) => (
+                      <>
+                        {fee.type === "fee" && (
+                          <p className="py-2 text-1xl" key={fee._id}>
+                            {fee.name}: &#8377; {fee.amount}
+                          </p>
+                        )}
+                      </>
+                    ))}
+                    <hr />
+                    <p className="py-2 text-1xl font-semibold">
+                      Total Fee: &#8377; {Number(total)}
+                    </p>
+                    <p className="py-2 text-1xl text-green-600 font-semibold">
+                      Paid Fee: &#8377; {Number(paidFee)}
+                    </p>
+                    <p className="py-2 text-1xl text-red-600 font-bold">
+                      Remaining Fee: &#8377; {Number(total) - Number(paidFee)}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="sm:pl-8">
-              <div className="flex flex-col mt-12">
-                {student.fees.map((fee: any) => (
-                  <>
-                    {fee.type === "fee" && (
-                      <p className="py-2 text-1xl" key={fee._id}>
-                        {fee.name}: &#8377; {fee.amount}
-                      </p>
-                    )}
-                  </>
-                ))}
-                <hr />
-                <p className="py-2 text-1xl font-semibold">
-                  Total Fee: &#8377; {Number(total)}
-                </p>
-                <p className="py-2 text-1xl text-green-600 font-semibold">
-                  Paid Fee: &#8377; {Number(paidFee)}
-                </p>
-                <p className="py-2 text-1xl text-red-600 font-bold">
-                  Remaining Fee: &#8377; {Number(total) - Number(paidFee)}
-                </p>
+              <div className="flex justify-around mt-20">
+                <Sheet>
+                  <SheetTrigger asChild>
+                    <Button variant={"warning"}>Edit</Button>
+                  </SheetTrigger>
+                  <SheetContent className="overflow-y-auto max-h-full">
+                    <SheetHeader>
+                      <SheetTitle>Edit profile</SheetTitle>
+                      <SheetDescription>
+                        Make changes to your profile here. Click save when
+                        you&apos;re done.
+                      </SheetDescription>
+                    </SheetHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="f_name" className="text-right">
+                          First Name
+                        </Label>
+                        <Input
+                          id="f_name"
+                          value={student.f_name}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, f_name: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="l_name" className="text-right">
+                          Last Name
+                        </Label>
+                        <Input
+                          id="l_name"
+                          value={student.l_name}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, l_name: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="roll_no" className="text-right">
+                          Roll No
+                        </Label>
+                        <Input
+                          id="roll_no"
+                          value={student.roll_no}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, roll_no: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="course" className="text-right">
+                          Course
+                        </Label>
+                        <Input
+                          id="course"
+                          value={student.course}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, course: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label
+                          htmlFor="session_start_year"
+                          className="text-right"
+                        >
+                          Session Start
+                        </Label>
+                        <Input
+                          id="session_start_year"
+                          value={student.session_start_year}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({
+                              ...student,
+                              session_start_year: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label
+                          htmlFor="session_end_year"
+                          className="text-right"
+                        >
+                          Session End
+                        </Label>
+                        <Input
+                          id="session_end_year"
+                          value={student.session_end_year}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({
+                              ...student,
+                              session_end_year: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="father_name" className="text-right">
+                          Father Name
+                        </Label>
+                        <Input
+                          id="father_name"
+                          value={student.father_name}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({
+                              ...student,
+                              father_name: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="mother_name" className="text-right">
+                          Mother Name
+                        </Label>
+                        <Input
+                          id="mother_name"
+                          value={student.mother_name}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({
+                              ...student,
+                              mother_name: e.target.value,
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="email" className="text-right">
+                          Email
+                        </Label>
+                        <Input
+                          id="email"
+                          value={student.email}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, email: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="phone" className="text-right">
+                          Phone
+                        </Label>
+                        <Input
+                          id="phone"
+                          value={student.phone}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, phone: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="dob" className="text-right">
+                          Date of Birth
+                        </Label>
+                        <Input
+                          id="dob"
+                          value={student.dob}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, dob: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="address" className="text-right">
+                          Address
+                        </Label>
+                        <Input
+                          id="address"
+                          value={student.address}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, address: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="city" className="text-right">
+                          City
+                        </Label>
+                        <Input
+                          id="city"
+                          value={student.city}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, city: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="state" className="text-right">
+                          State
+                        </Label>
+                        <Input
+                          id="state"
+                          value={student.state}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, state: e.target.value })
+                          }
+                        />
+                      </div>
+                      <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="pincode" className="text-right">
+                          Pincode
+                        </Label>
+                        <Input
+                          id="pincode"
+                          value={student.pincode}
+                          className="col-span-3"
+                          onChange={(e) =>
+                            setStudent({ ...student, pincode: e.target.value })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <SheetFooter>
+                      <SheetClose asChild>
+                        <Button variant={"success"} onClick={updateProfile}>
+                          Save changes
+                        </Button>
+                      </SheetClose>
+                    </SheetFooter>
+                  </SheetContent>
+                </Sheet>
+                <Dialog>
+                  <DialogTrigger>
+                    <Button variant={"info"}>Add Fee</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Fees</DialogTitle>
+                      <DialogDescription>
+                        <div className="flex flex-col gap-2 justify-center">
+                          <Input
+                            placeholder="Fee Name"
+                            value={addedFee.name}
+                            onChange={(e) =>
+                              setAddedFee({
+                                ...addedFee,
+                                name: e.target.value,
+                              })
+                            }
+                          />
+                          <Input
+                            placeholder="Description"
+                            value={addedFee.description}
+                            onChange={(e) =>
+                              setAddedFee({
+                                ...addedFee,
+                                description: e.target.value,
+                              })
+                            }
+                          />
+                          <Input
+                            placeholder="Amount"
+                            value={addedFee.amount}
+                            onChange={(e) =>
+                              setAddedFee({
+                                ...addedFee,
+                                amount: e.target.value,
+                              })
+                            }
+                          />
+                          <Button
+                            variant={"info"}
+                            onClick={() => {
+                              addFee();
+                            }}
+                          >
+                            Add Fee
+                          </Button>
+                        </div>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+                <Dialog>
+                  <DialogTrigger>
+                    <Button variant={"success"}>Pay Fee</Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Pay Fees</DialogTitle>
+                      <DialogDescription>
+                        <div className="flex flex-col gap-2 justify-center">
+                          <Select
+                            onValueChange={(value) =>
+                              setPayFee({ ...payFee, method: value })
+                            }
+                          >
+                            <SelectTrigger className="">
+                              <SelectValue placeholder="Method of Payment" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="cash">Cash</SelectItem>
+                              <SelectItem value="cheque">Cheque</SelectItem>
+                              <SelectItem value="online">Online</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <Input
+                            placeholder="Amount"
+                            onChange={(e) =>
+                              setPayFee({ ...payFee, amount: e.target.value })
+                            }
+                          />
+                          <Button
+                            variant={"info"}
+                            onClick={() => {
+                              payingFee();
+                            }}
+                          >
+                            Pay Fee
+                          </Button>
+                        </div>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
               </div>
-            </div>
-          </div>
-          <div className="flex justify-around mt-20">
-            <Button
-              variant={"warning"}
-              onClick={() => router.push(`/students/edit/${id}`)}
-            >
-              Edit
-            </Button>
-
-            <Dialog>
-              <DialogTrigger>
-                <Button variant={"info"}>Add Fee</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Add Fees</DialogTitle>
-                  <DialogDescription>
-                    <div className="flex flex-col gap-2 justify-center">
-                      <Input
-                        placeholder="Fee Name"
-                        value={addedFee.name}
-                        onChange={(e) =>
-                          setAddedFee({ ...addedFee, name: e.target.value })
-                        }
-                      />
-                      <Input
-                        placeholder="Description"
-                        value={addedFee.description}
-                        onChange={(e) =>
-                          setAddedFee({
-                            ...addedFee,
-                            description: e.target.value,
-                          })
-                        }
-                      />
-                      <Input
-                        placeholder="Amount"
-                        value={addedFee.amount}
-                        onChange={(e) =>
-                          setAddedFee({ ...addedFee, amount: e.target.value })
-                        }
-                      />
-                      <Button
-                        variant={"info"}
-                        onClick={() => {
-                          addFee();
-                        }}
-                      >
-                        Add Fee
-                      </Button>
-                    </div>
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger>
-                <Button variant={"success"}>Pay Fee</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Pay Fees</DialogTitle>
-                  <DialogDescription>
-                    <div className="flex flex-col gap-2 justify-center">
-                      <Select
-                        value={payFee.method}
-                        onValueChange={(value) =>
-                          setPayFee({ ...payFee, method: value })
-                        }
-                      >
-                        <SelectTrigger className="">
-                          <SelectValue placeholder="Method of Payment" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="cash">Cash</SelectItem>
-                          <SelectItem value="cheque">Cheque</SelectItem>
-                          <SelectItem value="online">Online</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <Input
-                        placeholder="Amount"
-                        onChange={(e) =>
-                          setPayFee({ ...payFee, amount: e.target.value })
-                        }
-                      />
-                      <Button
-                        variant={"info"}
-                        onClick={() => {
-                          payingFee();
-                        }}
-                      >
-                        Add Fee
-                      </Button>
-                    </div>
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </>
+            </>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 }

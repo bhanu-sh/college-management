@@ -212,14 +212,14 @@ export default function StudentTable({
                   className="px-6 py-3 cursor-pointer bg-gray-50"
                   onClick={() => sortData("f_name")}
                 >
-                  First Name
+                  Name
                 </th>
                 <th
                   scope="col"
                   className="px-6 py-3 cursor-pointer"
-                  onClick={() => sortData("l_name")}
+                  onClick={() => sortData("dob")}
                 >
-                  Last Name
+                  DOB
                 </th>
                 <th
                   scope="col"
@@ -277,8 +277,16 @@ export default function StudentTable({
                       }}
                     />
                   </td>
-                  <td className="px-6 py-4 bg-gray-50">{user.f_name}</td>
-                  <td className="px-6 py-4">{user.l_name}</td>
+                  <td className="px-6 py-4 bg-gray-50">
+                    {user.f_name} {user.l_name}
+                  </td>
+                  <td className="px-6 py-4">
+                    {new Date(user.dob).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </td>
                   <td className="px-6 py-4 bg-gray-50">{user.phone}</td>
                   <td className="px-6 py-4">{user.email}</td>
                   <td className="px-6 py-4 bg-gray-50">{user.course}</td>

@@ -4,12 +4,15 @@ import React from "react";
 import { excelToJson } from "@/helpers/excelToJson";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 export default function AddStaffs() {
   const [file, setFile] = React.useState<File | null>(null);
   const [json, setJson] = React.useState<any>(null);
   const [preview, setPreview] = React.useState<boolean>(false);
   const [loading, setLoading] = React.useState<boolean>(false);
+
+  const router = useRouter();
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -56,6 +59,7 @@ export default function AddStaffs() {
         console.log("Response data:", data); // Log the response data
         toast.remove();
         toast.success("Staff members uploaded successfully");
+        router.push("/staffs");
         // Handle success, possibly update state to reflect successful upload
       } catch (error) {
         console.error("An error occurred:", error);
@@ -74,7 +78,9 @@ export default function AddStaffs() {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold text-center text-red-500">Add Staffs</h1>
+      <h1 className="text-4xl font-bold text-center text-red-500">
+        Add Staffs
+      </h1>
       <div className="grid w-full max-w-xs items-center gap-1.5">
         <label className="text-sm text-gray-400 font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
           Upload File
@@ -131,4 +137,4 @@ export default function AddStaffs() {
       )}
     </div>
   );
-};
+}

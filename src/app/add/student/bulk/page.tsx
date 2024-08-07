@@ -76,7 +76,7 @@ export default function AddStudents() {
         console.log("Response data:", data); // Log the response data
         toast.remove();
         toast.success("Students uploaded successfully");
-        router.push("/dashboard/students");
+        router.push("/students");
         // Handle success, possibly update state to reflect successful upload
       } catch (error) {
         console.error("An error occurred:", error);
