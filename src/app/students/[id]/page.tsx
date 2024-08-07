@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -49,6 +50,7 @@ export default function StudentPage({ params }: any) {
   const [error, setError] = useState(false);
   const [total, setTotal] = useState<Number>(0);
   const [paidFee, setPaidFee] = useState<Number>(0);
+  const [feeData, setFeeData] = useState<any | null>(null);
   const [addedFee, setAddedFee] = useState({
     name: "",
     description: "",
@@ -65,6 +67,26 @@ export default function StudentPage({ params }: any) {
     college_id: "",
   });
 
+  const getFeeData = async () => {
+    try {
+      const res = await axios.post("/api/fee/getbystudent", { student_id: id });
+      setFeeData(res.data.data);
+      let total = 0;
+      let paid = 0;
+      res.data.data.forEach((fee: any) => {
+        if (fee.type === "fee") {
+          total += fee.amount;
+        } else {
+          paid += fee.amount;
+        }
+      });
+      setTotal(total);
+      setPaidFee(paid);
+    } catch (error: any) {
+      console.error("Error fetching fee data:", error);
+    }
+  };
+
   const getStudent = async (id: string) => {
     setLoading(true);
     try {
@@ -73,19 +95,6 @@ export default function StudentPage({ params }: any) {
       });
       const fetchedStudent = res.data.data;
       setStudent(fetchedStudent);
-      let total = 0;
-      let paid = 0;
-      fetchedStudent.fees.forEach((fee: any) => {
-        if (fee.type === "fee") {
-          total += fee.amount;
-        } else {
-          paid += fee.amount;
-        }
-      });
-
-      console.log("Total", total);
-      setTotal(total);
-      setPaidFee(paid);
       console.log("Student", res.data);
     } catch (error: any) {
       console.error("Error fetching student:", error);
@@ -117,7 +126,7 @@ export default function StudentPage({ params }: any) {
       console.log("Fee Added", res.data);
       toast.success("Fee Added");
       setAddedFee({ ...addedFee, name: "", description: "", amount: "" });
-      getStudent(id);
+      getFeeData();
     } catch (error: any) {
       console.error("Error adding fee:", error);
       toast.error("Error adding fee");
@@ -133,7 +142,7 @@ export default function StudentPage({ params }: any) {
       console.log("Fee Paid", res.data);
       toast.success("Fee Paid");
       setPayFee({ ...payFee, amount: "" });
-      getStudent(id);
+      getFeeData();
     } catch (error: any) {
       console.error("Error paying fee:", error);
       toast.error("Error paying fee");
@@ -142,6 +151,8 @@ export default function StudentPage({ params }: any) {
 
   useEffect(() => {
     getStudent(id);
+    getFeeData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   return (
@@ -207,7 +218,7 @@ export default function StudentPage({ params }: any) {
                     <h1 className="text-2xl font-semibold underline text-center">
                       Fee Details
                     </h1>
-                    {student.fees.map((fee: any) => (
+                    {feeData.map((fee: any) => (
                       <>
                         {fee.type === "fee" && (
                           <p className="py-2 text-1xl" key={fee._id}>
@@ -505,14 +516,16 @@ export default function StudentPage({ params }: any) {
                               })
                             }
                           />
-                          <Button
-                            variant={"info"}
-                            onClick={() => {
-                              addFee();
-                            }}
-                          >
-                            Add Fee
-                          </Button>
+                          <DialogClose>
+                            <Button
+                              variant={"info"}
+                              onClick={() => {
+                                addFee();
+                              }}
+                            >
+                              Add Fee
+                            </Button>
+                          </DialogClose>
                         </div>
                       </DialogDescription>
                     </DialogHeader>
@@ -547,14 +560,16 @@ export default function StudentPage({ params }: any) {
                               setPayFee({ ...payFee, amount: e.target.value })
                             }
                           />
-                          <Button
-                            variant={"info"}
-                            onClick={() => {
-                              payingFee();
-                            }}
-                          >
-                            Pay Fee
-                          </Button>
+                          <DialogClose>
+                            <Button
+                              variant={"info"}
+                              onClick={() => {
+                                payingFee();
+                              }}
+                            >
+                              Pay Fee
+                            </Button>
+                          </DialogClose>
                         </div>
                       </DialogDescription>
                     </DialogHeader>

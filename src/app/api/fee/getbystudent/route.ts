@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fees = await Fee.find({ student_id }).populate("student_id");
+    const fees = await Fee.find({ student_id });
     return NextResponse.json({ data: fees });
   } catch (error: any) {
     console.error("Error finding staff:", error.message);

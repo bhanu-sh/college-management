@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const user = await Student.findOne({ _id: id }).populate("fees");
+    const user = await Student.findOne({ _id: id });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
