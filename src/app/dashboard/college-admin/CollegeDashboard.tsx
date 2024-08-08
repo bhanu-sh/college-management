@@ -123,17 +123,26 @@ export default function CollegeDashboard() {
   };
 
   useEffect(() => {
-    if (session && !college) {
+    if (
+      session?.user.college_id &&
+      session.user.college_id.length > 0 &&
+      session &&
+      session.user.college_id !== "undefined"
+    ) {
       handleFetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session, college]);
+  }, [session]);
 
   useEffect(() => {
     setDisabled(!(newExpense.name && newExpense.amount > 0));
   }, [newExpense]);
 
-  if (!session || session.user.college_id === "") {
+  if (
+    !session ||
+    !session?.user.college_id ||
+    session.user.college_id === "undefined"
+  ) {
     return (
       <div className="flex flex-col items-center justify-center h-96">
         <h1 className="text-2xl font-semibold text-gray-500 mb-5">
@@ -152,137 +161,114 @@ export default function CollegeDashboard() {
     <div>
       {loading ? (
         <Loader />
-      ) : error ? (
-        <h1 className="text-2xl text-center font-semibold text-red-500">
-          {error}
-        </h1>
       ) : (
         <>
-          {session &&
-            college &&
-            students &&
-            staffs &&
-            expenses &&
-            pendingFees && (
-              <>
-                <h1 className="text-2xl text-center font-semibold">
-                  Welcome, {`${session.user.f_name} ${session.user.l_name}`}
-                </h1>
-                <h1 className="text-lg text-center font-semibold">
-                  {college?.name}
-                </h1>
-                <div className="flex flex-col justify-center py-5 border-y-2 border-gray-300">
-                  <h2 className="text-3xl font-bold text-center">Stats:</h2>
-                  <div className="flex flex-wrap justify-around">
-                    <CountCard
-                      title="Students"
-                      count={students.length}
-                      link="/students"
-                    />
-                    <CountCard
-                      title="Staffs"
-                      count={staffs.length}
-                      link="/staffs"
-                    />
-                  </div>
-                </div>
-                <hr />
-                <div className="flex justify-center gap-8 items-end py-5 border-b-2 border-gray-300">
-                  <h2 className="text-3xl font-bold">Lock Status:</h2>
-                  <CollegeLock collegeId={String(session.user.college_id)} />
-                </div>
-                <hr />
-                <div className="flex flex-col justify-center py-5 border-b-2 border-gray-300">
-                  <h2 className="text-3xl font-bold text-center">Finance:</h2>
-                  <div className="mx-auto mt-3">
-                    <Dialog
-                      onOpenChange={() => setNewExpense(initialExpenseState)}
-                    >
-                      <DialogTrigger>
-                        <Button variant="warning">Add Expense</Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Add Expense</DialogTitle>
-                          <DialogDescription>
-                            <div className="flex flex-col gap-2 justify-center">
-                              <Label htmlFor="name">Expense Name *</Label>
-                              <Input
-                                placeholder="Expense Name"
-                                required
-                                value={newExpense.name}
-                                onChange={(e) =>
-                                  setNewExpense((prev) => ({
-                                    ...prev,
-                                    name: e.target.value,
-                                  }))
-                                }
-                              />
-                              <Label htmlFor="description">Description</Label>
-                              <Input
-                                placeholder="Description"
-                                value={newExpense.description}
-                                onChange={(e) =>
-                                  setNewExpense((prev) => ({
-                                    ...prev,
-                                    description: e.target.value,
-                                  }))
-                                }
-                              />
-                              <Label htmlFor="amount">Amount *</Label>
-                              <Input
-                                type="number"
-                                placeholder="Amount"
-                                required
-                                value={newExpense.amount}
-                                onChange={(e) =>
-                                  setNewExpense((prev) => ({
-                                    ...prev,
-                                    amount: Number(e.target.value),
-                                  }))
-                                }
-                              />
-                              <Label htmlFor="date">Date</Label>
-                              <Input
-                                type="date"
-                                value={newExpense.date
-                                  .toISOString()
-                                  .substring(0, 10)}
-                                onChange={(e) =>
-                                  setNewExpense((prev) => ({
-                                    ...prev,
-                                    date: new Date(e.target.value),
-                                  }))
-                                }
-                              />
-                              <Button
-                                disabled={disabled}
-                                variant="info"
-                                onClick={handleAddExpense}
-                              >
-                                Add
-                              </Button>
-                            </div>
-                          </DialogDescription>
-                        </DialogHeader>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                  <div className="flex flex-wrap justify-around">
-                    <ExpenseCard
-                      title="Spent"
-                      amount={formatCurrency(expenses)}
-                      link="/dashboard/expenses"
-                    />
-                    <ExpenseCard
-                      title="Pending Fees"
-                      amount={formatCurrency(pendingFees)}
-                      link="/fees"
-                    />
-                  </div>
-                </div>
-              </>
-            )}
+          <h1 className="text-2xl text-center font-semibold">
+            Welcome, {`${session.user.f_name} ${session.user.l_name}`}
+          </h1>
+          <h1 className="text-lg text-center font-semibold">{college?.name}</h1>
+          <div className="flex flex-col justify-center py-5 border-y-2 border-gray-300">
+            <h2 className="text-3xl font-bold text-center">Stats:</h2>
+            <div className="flex flex-wrap justify-around">
+              <CountCard
+                title="Students"
+                count={students.length}
+                link="/students"
+              />
+              <CountCard title="Staffs" count={staffs.length} link="/staffs" />
+            </div>
+          </div>
+          <hr />
+          <div className="flex justify-center gap-8 items-end py-5 border-b-2 border-gray-300">
+            <h2 className="text-3xl font-bold">Lock Status:</h2>
+            <CollegeLock collegeId={String(session.user.college_id)} />
+          </div>
+          <hr />
+          <div className="flex flex-col justify-center py-5 border-b-2 border-gray-300">
+            <h2 className="text-3xl font-bold text-center">Finance:</h2>
+            <div className="mx-auto mt-3">
+              <Dialog onOpenChange={() => setNewExpense(initialExpenseState)}>
+                <DialogTrigger>
+                  <Button variant="warning">Add Expense</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add Expense</DialogTitle>
+                    <DialogDescription>
+                      <div className="flex flex-col gap-2 justify-center">
+                        <Label htmlFor="name">Expense Name *</Label>
+                        <Input
+                          placeholder="Expense Name"
+                          required
+                          value={newExpense.name}
+                          onChange={(e) =>
+                            setNewExpense((prev) => ({
+                              ...prev,
+                              name: e.target.value,
+                            }))
+                          }
+                        />
+                        <Label htmlFor="description">Description</Label>
+                        <Input
+                          placeholder="Description"
+                          value={newExpense.description}
+                          onChange={(e) =>
+                            setNewExpense((prev) => ({
+                              ...prev,
+                              description: e.target.value,
+                            }))
+                          }
+                        />
+                        <Label htmlFor="amount">Amount *</Label>
+                        <Input
+                          type="number"
+                          placeholder="Amount"
+                          required
+                          value={newExpense.amount}
+                          onChange={(e) =>
+                            setNewExpense((prev) => ({
+                              ...prev,
+                              amount: Number(e.target.value),
+                            }))
+                          }
+                        />
+                        <Label htmlFor="date">Date</Label>
+                        <Input
+                          type="date"
+                          value={newExpense.date.toISOString().substring(0, 10)}
+                          onChange={(e) =>
+                            setNewExpense((prev) => ({
+                              ...prev,
+                              date: new Date(e.target.value),
+                            }))
+                          }
+                        />
+                        <Button
+                          disabled={disabled}
+                          variant="info"
+                          onClick={handleAddExpense}
+                        >
+                          Add
+                        </Button>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div className="flex flex-wrap justify-around">
+              <ExpenseCard
+                title="Spent"
+                amount={formatCurrency(expenses)}
+                link="/dashboard/expenses"
+              />
+              <ExpenseCard
+                title="Pending Fees"
+                amount={formatCurrency(pendingFees)}
+                link="/fees"
+              />
+            </div>
+          </div>
         </>
       )}
     </div>
