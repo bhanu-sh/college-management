@@ -123,11 +123,11 @@ export default function CollegeDashboard() {
   };
 
   useEffect(() => {
-    if (session) {
+    if (session && !college) {
       handleFetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [session, college]);
 
   useEffect(() => {
     setDisabled(!(newExpense.name && newExpense.amount > 0));
