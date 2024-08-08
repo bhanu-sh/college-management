@@ -189,7 +189,9 @@ export default function CollegeDashboard() {
             <div className="mx-auto mt-3">
               <Dialog onOpenChange={() => setNewExpense(initialExpenseState)}>
                 <DialogTrigger>
-                  <Button variant="warning">Add Expense</Button>
+                  <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400">
+                    Add Expense
+                  </button>
                 </DialogTrigger>
                 <DialogContent>
                   <DialogHeader>

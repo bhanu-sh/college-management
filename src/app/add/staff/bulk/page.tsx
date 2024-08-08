@@ -5,8 +5,12 @@ import { excelToJson } from "@/helpers/excelToJson";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { Link } from "lucide-react";
 
 export default function AddStaffs() {
+  const { data: session } = useSession();
+
   const [file, setFile] = React.useState<File | null>(null);
   const [json, setJson] = React.useState<any>(null);
   const [preview, setPreview] = React.useState<boolean>(false);
@@ -46,6 +50,7 @@ export default function AddStaffs() {
 
         const res = await axios.post("/api/user/staff/bulkadd", {
           staff: formattedJson,
+          college_id: session?.user.college_id,
         });
 
         if (res.status !== 200) {
@@ -78,7 +83,9 @@ export default function AddStaffs() {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold text-center text-red-500">
+      {session && (session.user.role === "CollegeAdmin" || session.user.role === "Admin") ? (
+        <div>
+          <h1 className="text-4xl font-bold text-center text-red-500">
         Add Staffs
       </h1>
       <div className="grid w-full max-w-xs items-center gap-1.5">
@@ -135,6 +142,22 @@ export default function AddStaffs() {
           </table>
         </div>
       )}
+        </div>
+        ): 
+        (
+          <div className="flex flex-col items-center justify-center h-96">
+            <h1 className="text-2xl font-semibold text-gray-500 mb-5">
+              Restricted
+            </h1>
+            <Link href="/dashboard">
+              <button className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+                Dashboard
+              </button>
+            </Link>
+          </div>
+        )
+
+      }
     </div>
   );
 }

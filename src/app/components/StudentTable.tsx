@@ -362,7 +362,6 @@ export default function StudentTable({
                             </AlertDialogFooter>
                           </AlertDialogContent>
                         </AlertDialog>
-                        ;
                       </>
                     )}
                   </td>

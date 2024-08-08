@@ -42,6 +42,14 @@ const collegeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    subscriptionValidity: {
+      type: Date,
+      default: () => {
+        let date = new Date();
+        date.setFullYear(date.getFullYear());
+        return date;
+      },
+    },
     expenses: [
       {
         type: mongoose.Schema.Types.ObjectId,

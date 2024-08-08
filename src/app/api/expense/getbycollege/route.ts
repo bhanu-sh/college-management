@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
 
     const users = await Expense.find({
       college_id: college_id,
-    });
+    }).populate("college_id", "lock subscriptionValidity");
     return NextResponse.json({ data: users });
   } catch (error: any) {
     console.error("Error finding Expenses:", error.message);
