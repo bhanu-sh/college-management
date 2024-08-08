@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const feeSchema = new mongoose.Schema(
   {
+    receipt_no: {
+      type: Number,
+      required: true,
+    },
     name: {
       type: String,
       required: true,

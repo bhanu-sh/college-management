@@ -11,7 +11,7 @@ export default function CountCard({
   link: string;
 }) {
   return (
-    <div className="w-80 p-4 bg-white rounded-lg shadow-md my-5">
+    <div className="w-80 p-4 bg-blue-100 rounded-lg shadow-md my-5">
       <div className="p-4 text-center">
         <h2 className="text-xl  font-semibold">{title}</h2>
         <h1 className="text-4xl">{String(count)}</h1>

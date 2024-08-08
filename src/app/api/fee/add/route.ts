@@ -18,8 +18,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Student not found" }, { status: 404 });
     }
 
+    const receipt_no = (await Fee.countDocuments({})) + 1;
+
     // Create new Fee
     const newFee = new Fee({
+      receipt_no,
       name,
       description,
       amount,

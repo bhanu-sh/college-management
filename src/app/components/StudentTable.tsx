@@ -170,13 +170,31 @@ export default function StudentTable({
             Export to Excel
           </button>
           {(role === "CollegeAdmin" || role === "Admin") && (
-            <button
-              className="px-3 py-1 bg-red-500 text-white rounded-md ml-2 disabled:opacity-50"
-              disabled={selected.length === 0 || lock}
-              onClick={deleteSelectedUsers}
-            >
-              Delete Selected
-            </button>
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <button
+                  className="px-3 py-1 bg-red-500 text-white rounded-md ml-2 disabled:opacity-50"
+                  disabled={selected.length === 0 || lock}
+                >
+                  Delete Selected
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete
+                    this student and remove all related data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={deleteSelectedUsers}>
+                    Continue
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           )}
         </div>
         <div className="relative text-gray-600 focus-within:text-gray-400 my-3">

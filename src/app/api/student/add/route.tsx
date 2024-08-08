@@ -71,26 +71,30 @@ export async function POST(request: NextRequest) {
 
     const savedStudent = await newStudent.save();
 
+    const course_receipt_no = (await Fee.countDocuments({})) + 1;
     // Create new Fee
     const newCourseFee = new Fee({
       name: "Course Fee",
       description: "Course Fee",
       amount: 0,
       type: "fee",
+      receipt_no: course_receipt_no,
       college_id,
       student_id: savedStudent._id,
     });
+    await newCourseFee.save();
+
+    const paid_receipt_no = (await Fee.countDocuments({})) + 1;
 
     const newPaidFee = new Fee({
       name: "Paid Fee",
       description: "Paid Fee",
       amount: 0,
+      receipt_no: paid_receipt_no,
       type: "received",
       college_id,
       student_id: savedStudent._id,
     });
-
-    await newCourseFee.save();
     await newPaidFee.save();
 
     savedStudent.fees.push(newCourseFee._id, newPaidFee._id);

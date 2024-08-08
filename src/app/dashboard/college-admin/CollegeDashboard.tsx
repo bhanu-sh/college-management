@@ -56,22 +56,41 @@ export default function CollegeDashboard() {
   const handleFetchData = async () => {
     setLoading(true);
     try {
-      const [collegeRes, studentsRes, feesRes, staffsRes, expensesRes] = await Promise.all([
-        axios.post(`/api/college/getbyid`, { college_id: session?.user.college_id }),
-        axios.post(`/api/student/getbycollege`, { college_id: session?.user.college_id }),
-        axios.post(`/api/fee/getbycollege`, { college_id: session?.user.college_id }),
-        axios.post(`/api/user/staff/getbycollege`, { college_id: session?.user.college_id }),
-        axios.post(`/api/expense/getbycollege`, { college_id: session?.user.college_id }),
-      ]);
+      const [collegeRes, studentsRes, feesRes, staffsRes, expensesRes] =
+        await Promise.all([
+          axios.post(`/api/college/getbyid`, {
+            college_id: session?.user.college_id,
+          }),
+          axios.post(`/api/student/getbycollege`, {
+            college_id: session?.user.college_id,
+          }),
+          axios.post(`/api/fee/getbycollege`, {
+            college_id: session?.user.college_id,
+          }),
+          axios.post(`/api/user/staff/getbycollege`, {
+            college_id: session?.user.college_id,
+          }),
+          axios.post(`/api/expense/getbycollege`, {
+            college_id: session?.user.college_id,
+          }),
+        ]);
 
       setCollege(collegeRes.data);
       setStudents(studentsRes.data.data);
       setStaffs(staffsRes.data.data);
 
-      const totalFees = feesRes.data.data.reduce((acc: number, fee: any) => acc + (fee.type === "fee" ? fee.amount : -fee.amount), 0);
+      const totalFees = feesRes.data.data.reduce(
+        (acc: number, fee: any) =>
+          acc + (fee.type === "fee" ? fee.amount : -fee.amount),
+        0
+      );
       setPendingFees(totalFees);
 
-      const totalExpenses = expensesRes.data.data.reduce((acc: number, expense: any) => acc + (expense.type === "sent" ? expense.amount : 0), 0);
+      const totalExpenses = expensesRes.data.data.reduce(
+        (acc: number, expense: any) =>
+          acc + (expense.type === "sent" ? expense.amount : 0),
+        0
+      );
       setExpenses(totalExpenses);
     } catch (error: any) {
       setError(error.response.data.error);
@@ -95,11 +114,19 @@ export default function CollegeDashboard() {
     }
   };
 
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      minimumFractionDigits: 2,
+    }).format(amount);
+  };
+
   useEffect(() => {
     if (session) {
       handleFetchData();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   useEffect(() => {
@@ -138,7 +165,11 @@ export default function CollegeDashboard() {
           <div className="flex flex-col justify-center py-5 border-y-2 border-gray-300">
             <h2 className="text-3xl font-bold text-center">Stats:</h2>
             <div className="flex flex-wrap justify-around">
-              <CountCard title="Students" count={students.length} link="/students" />
+              <CountCard
+                title="Students"
+                count={students.length}
+                link="/students"
+              />
               <CountCard title="Staffs" count={staffs.length} link="/staffs" />
             </div>
           </div>
@@ -151,9 +182,7 @@ export default function CollegeDashboard() {
           <div className="flex flex-col justify-center py-5 border-b-2 border-gray-300">
             <h2 className="text-3xl font-bold text-center">Finance:</h2>
             <div className="mx-auto mt-3">
-              <Dialog
-                onOpenChange={() => setNewExpense(initialExpenseState)}
-              >
+              <Dialog onOpenChange={() => setNewExpense(initialExpenseState)}>
                 <DialogTrigger>
                   <Button variant="warning">Add Expense</Button>
                 </DialogTrigger>
@@ -223,8 +252,15 @@ export default function CollegeDashboard() {
               </Dialog>
             </div>
             <div className="flex flex-wrap justify-around">
-              <ExpenseCard title="Spent" amount={expenses} link="/expenses" />
-              <ExpenseCard title="Pending Fees" amount={pendingFees} link="/fees" />
+              <ExpenseCard
+              title="Spent"
+              amount={formatCurrency(expenses)} 
+              link="/expenses" />
+              <ExpenseCard
+                title="Pending Fees"
+                amount={formatCurrency(pendingFees)}
+                link="/fees"
+              />
             </div>
           </div>
         </>

@@ -193,11 +193,6 @@ export default function StudentPage({ params }: any) {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
                 <div className="md:flex flex-col mt-12 justify-center">
-                  {/* <img
-                    src={student.avatar}
-                    alt="profile-pic"
-                    className="w-40 h-40 sm:w-48 sm:h-48 rounded-full mx-auto"
-                  /> */}
                   <Dialog>
                     <DialogTrigger>
                       <Button variant={"link"}>
@@ -262,10 +257,6 @@ export default function StudentPage({ params }: any) {
                     <h1 className="text-2xl font-semibold underline text-center">
                       Fee Details
                     </h1>
-                    <p>
-                      Lock Status :{" "}
-                      {student.college_id.lock ? "Locked" : "Unlocked"}
-                    </p>
                     {feeData && (
                       <>
                         {feeData.map((fee: any) => (
