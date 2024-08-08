@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -51,6 +52,13 @@ export default function StudentPage({ params }: any) {
   const [total, setTotal] = useState<Number>(0);
   const [paidFee, setPaidFee] = useState<Number>(0);
   const [feeData, setFeeData] = useState<any | null>(null);
+  const [changedFee, setChangedFee] = useState({
+    name: "",
+    description: "",
+    amount: "",
+    student_id: id,
+    college_id: "",
+  });
   const [addedFee, setAddedFee] = useState({
     name: "",
     description: "",
@@ -117,6 +125,21 @@ export default function StudentPage({ params }: any) {
     }
   };
 
+  const editFee = async (feeId: string) => {
+    try {
+      const res = await axios.put(`/api/fee/edit`, {
+        _id: feeId,
+        ...changedFee,
+      });
+      console.log("Fee Updated", res.data);
+      toast.success("Fee Updated");
+      getFeeData();
+    } catch (error: any) {
+      console.error("Error updating fee:", error);
+      toast.error("Error updating fee");
+    }
+  };
+
   const addFee = async () => {
     try {
       const updatedFee = { ...addedFee, college_id: student.college_id };
@@ -170,12 +193,33 @@ export default function StudentPage({ params }: any) {
             <>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
                 <div className="md:flex flex-col mt-12 justify-center">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  {/* <img
                     src={student.avatar}
                     alt="profile-pic"
                     className="w-40 h-40 sm:w-48 sm:h-48 rounded-full mx-auto"
-                  />
+                  /> */}
+                  <Dialog>
+                    <DialogTrigger>
+                      <Button variant={"link"}>
+                        <img
+                          src={student.avatar}
+                          alt="profile-pic"
+                          className="w-40 h-40 sm:w-48 sm:h-48 rounded-full mx-auto"
+                        />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogDescription>
+                          <img
+                            src={student.avatar}
+                            className="w-full h-full"
+                            alt="avatar"
+                          />
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
                 </div>
                 <div className="flex flex-col border-b-2 sm:border-b-0 sm:border-r-2 mt-4">
                   <h1 className="text-2xl font-semibold underline text-center">
@@ -218,13 +262,88 @@ export default function StudentPage({ params }: any) {
                     <h1 className="text-2xl font-semibold underline text-center">
                       Fee Details
                     </h1>
+                    <p>
+                      Lock Status :{" "}
+                      {student.college_id.lock ? "Locked" : "Unlocked"}
+                    </p>
                     {feeData && (
                       <>
                         {feeData.map((fee: any) => (
                           <>
                             {fee.type === "fee" && (
                               <p className="py-2 text-1xl" key={fee._id}>
-                                {fee.name}: &#8377; {fee.amount}
+                                {fee.name}: &#8377; {fee.amount}{" "}
+                                {!student.college_id.lock && (
+                                  <span>
+                                    <Dialog>
+                                      <DialogTrigger>
+                                        <Button variant={"link"}>Edit</Button>
+                                      </DialogTrigger>
+                                      <DialogContent>
+                                        <DialogHeader>
+                                          <DialogTitle>
+                                            Edit {fee.name}
+                                          </DialogTitle>
+                                          <DialogDescription>
+                                            <p className="my-2 text-orange-500">
+                                              Only fill the fields you want to
+                                              edit
+                                            </p>
+                                            <div className="flex flex-col gap-2 justify-center">
+                                              <Label htmlFor="name">
+                                                Fee Name
+                                              </Label>
+                                              <Input
+                                                placeholder={fee.name}
+                                                onChange={(e) =>
+                                                  setChangedFee({
+                                                    ...changedFee,
+                                                    name: e.target.value,
+                                                  })
+                                                }
+                                              />
+                                              <Label htmlFor="description">
+                                                Description
+                                              </Label>
+                                              <Input
+                                                placeholder={fee.description}
+                                                onChange={(e) =>
+                                                  setChangedFee({
+                                                    ...changedFee,
+                                                    description: e.target.value,
+                                                  })
+                                                }
+                                              />
+                                              <Label htmlFor="amount">
+                                                Amount
+                                              </Label>
+                                              <Input
+                                                placeholder={fee.amount}
+                                                onChange={(e) =>
+                                                  setChangedFee({
+                                                    ...changedFee,
+                                                    amount: e.target.value,
+                                                  })
+                                                }
+                                              />
+
+                                              <DialogClose>
+                                                <Button
+                                                  variant={"info"}
+                                                  onClick={() => {
+                                                    editFee(fee._id);
+                                                  }}
+                                                >
+                                                  Edit
+                                                </Button>
+                                              </DialogClose>
+                                            </div>
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                      </DialogContent>
+                                    </Dialog>
+                                  </span>
+                                )}
                               </p>
                             )}
                           </>
@@ -247,7 +366,9 @@ export default function StudentPage({ params }: any) {
               <div className="flex justify-around mt-20">
                 <Sheet>
                   <SheetTrigger asChild>
-                    <Button variant={"warning"}>Edit</Button>
+                    {!student.college_id.lock && (
+                      <Button variant={"warning"}>Edit</Button>
+                    )}
                   </SheetTrigger>
                   <SheetContent className="overflow-y-auto max-h-full">
                     <SheetHeader>
@@ -483,7 +604,9 @@ export default function StudentPage({ params }: any) {
                 </Sheet>
                 <Dialog>
                   <DialogTrigger>
-                    <Button variant={"info"}>Add Fee</Button>
+                    {!student.college_id.lock && (
+                      <Button variant={"info"}>Add Fee</Button>
+                    )}
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>

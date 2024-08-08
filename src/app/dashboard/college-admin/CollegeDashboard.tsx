@@ -5,6 +5,20 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import CountCard from "@/app/components/CountCard";
 import CollegeLock from "@/app/components/CollegeLock";
+import ExpenseCard from "@/app/components/ExpenseCard";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Loader from "@/app/components/Loader";
+import toast from "react-hot-toast";
 
 interface College {
   name: string;
@@ -19,6 +33,14 @@ interface College {
   feesLocked: boolean;
 }
 
+const initialExpenseState = {
+  name: "",
+  description: "",
+  amount: 0,
+  type: "sent",
+  date: new Date(),
+};
+
 export default function CollegeDashboard() {
   const { data: session } = useSession();
   const [college, setCollege] = useState<College | null>(null);
@@ -26,14 +48,31 @@ export default function CollegeDashboard() {
   const [staffs, setStaffs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [pendingFees, setPendingFees] = useState(0);
+  const [expenses, setExpenses] = useState(0);
+  const [disabled, setDisabled] = useState(true);
+  const [newExpense, setNewExpense] = useState(initialExpenseState);
 
-  const fetchCollege = async () => {
+  const handleFetchData = async () => {
     setLoading(true);
     try {
-      const response = await axios.post(`/api/college/getbyid`, {
-        college_id: session?.user.college_id,
-      });
-      setCollege(response.data);
+      const [collegeRes, studentsRes, feesRes, staffsRes, expensesRes] = await Promise.all([
+        axios.post(`/api/college/getbyid`, { college_id: session?.user.college_id }),
+        axios.post(`/api/student/getbycollege`, { college_id: session?.user.college_id }),
+        axios.post(`/api/fee/getbycollege`, { college_id: session?.user.college_id }),
+        axios.post(`/api/user/staff/getbycollege`, { college_id: session?.user.college_id }),
+        axios.post(`/api/expense/getbycollege`, { college_id: session?.user.college_id }),
+      ]);
+
+      setCollege(collegeRes.data);
+      setStudents(studentsRes.data.data);
+      setStaffs(staffsRes.data.data);
+
+      const totalFees = feesRes.data.data.reduce((acc: number, fee: any) => acc + (fee.type === "fee" ? fee.amount : -fee.amount), 0);
+      setPendingFees(totalFees);
+
+      const totalExpenses = expensesRes.data.data.reduce((acc: number, expense: any) => acc + (expense.type === "sent" ? expense.amount : 0), 0);
+      setExpenses(totalExpenses);
     } catch (error: any) {
       setError(error.response.data.error);
       console.log("Error", error.response.data.error);
@@ -41,109 +80,153 @@ export default function CollegeDashboard() {
     setLoading(false);
   };
 
-  const fetchStudents = async () => {
-    setLoading(true);
+  const handleAddExpense = async () => {
     try {
-      const response = await axios.post(`/api/student/getbycollege`, {
+      await axios.post(`/api/expense/add`, {
         college_id: session?.user.college_id,
+        ...newExpense,
       });
-      setStudents(response.data.data);
+      toast.success("Expense Added Successfully");
+      setNewExpense(initialExpenseState);
+      handleFetchData(); // Refresh data after adding new expense
     } catch (error: any) {
-      setError(error.response.data.error);
-      console.log("Error", error.response.data.error);
+      console.log("Adding failed", error.response.data.error);
+      toast.error(error.response.data.error);
     }
-    setLoading(false);
-  };
-
-  const lockDetails = async () => {
-    try {
-      const response = await axios.post(`/api/college/lock`, {
-        college_id: session?.user.college_id,
-      });
-      console.log("Details Locked", response.data);
-    } catch (error: any) {
-      console.log("Error", error.response.data.error);
-    } finally {
-      fetchCollege();
-    }
-  };
-
-  const fetchStaffs = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.post(`/api/user/staff/getbycollege`, {
-        college_id: session?.user.college_id,
-      });
-      setStaffs(response.data.data);
-    } catch (error: any) {
-      setError(error.response.data.error);
-      console.log("Error", error.response.data.error);
-    }
-    setLoading(false);
   };
 
   useEffect(() => {
     if (session) {
-      fetchCollege();
-      fetchStudents();
-      fetchStaffs();
+      handleFetchData();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [session]);
+
+  useEffect(() => {
+    setDisabled(!(newExpense.name && newExpense.amount > 0));
+  }, [newExpense]);
+
+  if (!session || session.user.college_id === "") {
+    return (
+      <div className="flex flex-col items-center justify-center h-96">
+        <h1 className="text-2xl font-semibold text-gray-500 mb-5">
+          No College Added
+        </h1>
+        <Link href="/add/college">
+          <button className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md">
+            Add College
+          </button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div>
-      {session && session?.user.college_id === "" || error ? (
-        <div className="flex flex-col items-center justify-center h-96">
-          <h1 className="text-2xl font-semibold text-gray-500 mb-5">
-            No College Added
-          </h1>
-          <Link href="/add/college">
-            <button className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md">
-              Add College
-            </button>
-          </Link>
-        </div>
+      {loading ? (
+        <Loader />
+      ) : error ? (
+        <h1 className="text-2xl text-center font-semibold text-red-500">
+          {error}
+        </h1>
       ) : (
         <>
-          {loading ? (
-            <h1 className="text-2xl text-center font-semibold">Loading...</h1>
-          ) : (
-            <>
-              {error ? (
-                <h1 className="text-2xl text-center font-semibold text-red-500">
-                  {error}
-                </h1>
-              ) : (
-                <>
-                  <h1 className="text-2xl text-center font-semibold">
-                    Welcome, {session?.user.f_name + " " + session?.user.l_name}
-                  </h1>
-                  <h1 className="text-lg text-center font-semibold">
-                    {college?.name}
-                  </h1>
-                  <div className="flex flex-wrap justify-around">
-                    <CountCard
-                      title="Students"
-                      count={students.length}
-                      link="/students"
-                    />
-                    <CountCard
-                      title="Staffs"
-                      count={staffs.length}
-                      link="/staffs"
-                    />
-                  </div>
-                  <hr />
-                  <div className="flex justify-center gap-8 items-end">
-                    <h2 className="text-3xl font-bold">Lock Status:</h2>
-                    <CollegeLock collegeId={session?.user.college_id || ""} />
-                  </div>
-                  <hr />
-                </>
-              )}
-            </>
-          )}
+          <h1 className="text-2xl text-center font-semibold">
+            Welcome, {`${session.user.f_name} ${session.user.l_name}`}
+          </h1>
+          <h1 className="text-lg text-center font-semibold">{college?.name}</h1>
+          <div className="flex flex-col justify-center py-5 border-y-2 border-gray-300">
+            <h2 className="text-3xl font-bold text-center">Stats:</h2>
+            <div className="flex flex-wrap justify-around">
+              <CountCard title="Students" count={students.length} link="/students" />
+              <CountCard title="Staffs" count={staffs.length} link="/staffs" />
+            </div>
+          </div>
+          <hr />
+          <div className="flex justify-center gap-8 items-end py-5 border-b-2 border-gray-300">
+            <h2 className="text-3xl font-bold">Lock Status:</h2>
+            <CollegeLock collegeId={String(session.user.college_id)} />
+          </div>
+          <hr />
+          <div className="flex flex-col justify-center py-5 border-b-2 border-gray-300">
+            <h2 className="text-3xl font-bold text-center">Finance:</h2>
+            <div className="mx-auto mt-3">
+              <Dialog
+                onOpenChange={() => setNewExpense(initialExpenseState)}
+              >
+                <DialogTrigger>
+                  <Button variant="warning">Add Expense</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add Expense</DialogTitle>
+                    <DialogDescription>
+                      <div className="flex flex-col gap-2 justify-center">
+                        <Label htmlFor="name">Expense Name *</Label>
+                        <Input
+                          placeholder="Expense Name"
+                          required
+                          value={newExpense.name}
+                          onChange={(e) =>
+                            setNewExpense((prev) => ({
+                              ...prev,
+                              name: e.target.value,
+                            }))
+                          }
+                        />
+                        <Label htmlFor="description">Description</Label>
+                        <Input
+                          placeholder="Description"
+                          value={newExpense.description}
+                          onChange={(e) =>
+                            setNewExpense((prev) => ({
+                              ...prev,
+                              description: e.target.value,
+                            }))
+                          }
+                        />
+                        <Label htmlFor="amount">Amount *</Label>
+                        <Input
+                          type="number"
+                          placeholder="Amount"
+                          required
+                          value={newExpense.amount}
+                          onChange={(e) =>
+                            setNewExpense((prev) => ({
+                              ...prev,
+                              amount: Number(e.target.value),
+                            }))
+                          }
+                        />
+                        <Label htmlFor="date">Date</Label>
+                        <Input
+                          type="date"
+                          value={newExpense.date.toISOString().substring(0, 10)}
+                          onChange={(e) =>
+                            setNewExpense((prev) => ({
+                              ...prev,
+                              date: new Date(e.target.value),
+                            }))
+                          }
+                        />
+                        <Button
+                          disabled={disabled}
+                          variant="info"
+                          onClick={handleAddExpense}
+                        >
+                          Add
+                        </Button>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            </div>
+            <div className="flex flex-wrap justify-around">
+              <ExpenseCard title="Spent" amount={expenses} link="/expenses" />
+              <ExpenseCard title="Pending Fees" amount={pendingFees} link="/fees" />
+            </div>
+          </div>
         </>
       )}
     </div>

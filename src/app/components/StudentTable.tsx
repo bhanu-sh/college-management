@@ -5,6 +5,17 @@ import axios from "axios";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { jsonToExcel } from "@/helpers/jsonToExcel";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function StudentTable({
   collegeId,
@@ -158,7 +169,7 @@ export default function StudentTable({
           >
             Export to Excel
           </button>
-          {role === "CollegeAdmin" && (
+          {(role === "CollegeAdmin" || role === "Admin") && (
             <button
               className="px-3 py-1 bg-red-500 text-white rounded-md ml-2 disabled:opacity-50"
               disabled={selected.length === 0 || lock}
@@ -300,14 +311,41 @@ export default function StudentTable({
                       </button>
                     </Link>
                     {(role === "CollegeAdmin" || role === "Admin") && (
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400"
-                        onClick={() => {
-                          deleteUser(user._id);
-                        }}
-                      >
-                        Delete
-                      </button>
+                      <>
+                        <AlertDialog>
+                          <AlertDialogTrigger>
+                            <button
+                              disabled={lock}
+                              className="bg-red-500 w-full hover:bg-red-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 disabled:opacity-50 disabled:bg-red-500"
+                            >
+                              Delete
+                            </button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete this student and remove all
+                                related data from our servers.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => {
+                                  deleteUser(user._id);
+                                }}
+                              >
+                                Continue
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                        ;
+                      </>
                     )}
                   </td>
                 </tr>

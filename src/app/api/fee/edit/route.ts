@@ -4,37 +4,34 @@ import { NextRequest, NextResponse } from "next/server";
 
 connect();
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest) {
   try {
     const reqBody = await request.json();
-    const { id, name, description, amount } = reqBody;
+    const { _id, ...rest } = reqBody;
 
-    console.log(reqBody);
-
-    // Check if Fee exists
-    const fee = await Fee.findOne({ _id: id });
-
-    if (!fee) {
-      return NextResponse.json({ error: "User not found" }, { status: 400 });
+    if (!_id) {
+      return NextResponse.json(
+        { error: "Fee ID not provided" },
+        { status: 400 }
+      );
     }
 
-    // Update User
-    const updated = await Fee.updateOne(
-      { _id: id },
-      {
-        name: name !== "" ? name : fee.name,
-        description: description !== "" ? description : fee.description,
-        amount: amount !== "" ? amount : fee.amount,
+    const fee = await Fee.findById(_id);
+
+    if (!fee) {
+      return NextResponse.json({ error: "Fee not found" }, { status: 404 });
+    }
+
+    //dont change empty fields
+    for (const key in rest) {
+      if (!rest[key]) {
+        delete rest[key];
       }
-    );
+    }
 
-    console.log(updated);
+    await Fee.findByIdAndUpdate(_id, rest);
 
-    return NextResponse.json({
-      message: "Fee paid successfully",
-      success: true,
-      updated,
-    });
+    return NextResponse.json({ message: "Fee updated successfully" });
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }

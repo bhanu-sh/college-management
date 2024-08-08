@@ -7,7 +7,7 @@ export default function CountCard({
   link,
 }: {
   title: string;
-  count: number;
+  count: string | number;
   link: string;
 }) {
   return (
