@@ -215,146 +215,7 @@ export default function StudentPage({ params }: any) {
                       </DialogHeader>
                     </DialogContent>
                   </Dialog>
-                </div>
-                <div className="flex flex-col border-b-2 sm:border-b-0 sm:border-r-2 mt-4">
-                  <h1 className="text-2xl font-semibold underline text-center">
-                    Student Details
-                  </h1>
-                  <p className="py-2 text-1xl">
-                    Name: {student.f_name} {student.l_name}
-                  </p>
-                  <p className="py-2 text-1xl">Roll No: {student.roll_no}</p>
-                  <p className="py-2 text-1xl">Course: {student.course}</p>
-                  <p className="py-2 text-1xl">
-                    Session: {student.session_start_year} -{" "}
-                    {student.session_end_year}
-                  </p>
-                  <p className="py-2 text-1xl">
-                    Father Name: {student.father_name}
-                  </p>
-                  <p className="py-2 text-1xl">
-                    Mother Name: {student.mother_name}
-                  </p>
-                  <div className="flex">
-                    <p className="py-2 text-1xl">Contact:</p>
-
-                    <div className="pl-12 pt-1 text-1xl flex flex-col">
-                      <Link href={`mailto:${student.email}`} className="py-2">
-                        Email: {student.email}
-                      </Link>
-                      <Link href={`tel:${student.phone}`} className="py-2">
-                        Phone: {student.phone}
-                      </Link>
-                      <p className="py-2">
-                        Address: {student.address}, {student.city},{" "}
-                        {student.state} ({student.pincode})
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="sm:pl-8">
-                  <div className="flex flex-col mt-4">
-                    <h1 className="text-2xl font-semibold underline text-center">
-                      Fee Details
-                    </h1>
-                    {feeData && (
-                      <>
-                        {feeData.map((fee: any) => (
-                          <>
-                            {fee.type === "fee" && (
-                              <p className="py-2 text-1xl" key={fee._id}>
-                                {fee.name}: &#8377; {fee.amount}{" "}
-                                {!student.college_id.lock && (
-                                  <span>
-                                    <Dialog>
-                                      <DialogTrigger>
-                                        <Button variant={"link"}>Edit</Button>
-                                      </DialogTrigger>
-                                      <DialogContent>
-                                        <DialogHeader>
-                                          <DialogTitle>
-                                            Edit {fee.name}
-                                          </DialogTitle>
-                                          <DialogDescription>
-                                            <p className="my-2 text-orange-500">
-                                              Only fill the fields you want to
-                                              edit
-                                            </p>
-                                            <div className="flex flex-col gap-2 justify-center">
-                                              <Label htmlFor="name">
-                                                Fee Name
-                                              </Label>
-                                              <Input
-                                                placeholder={fee.name}
-                                                onChange={(e) =>
-                                                  setChangedFee({
-                                                    ...changedFee,
-                                                    name: e.target.value,
-                                                  })
-                                                }
-                                              />
-                                              <Label htmlFor="description">
-                                                Description
-                                              </Label>
-                                              <Input
-                                                placeholder={fee.description}
-                                                onChange={(e) =>
-                                                  setChangedFee({
-                                                    ...changedFee,
-                                                    description: e.target.value,
-                                                  })
-                                                }
-                                              />
-                                              <Label htmlFor="amount">
-                                                Amount
-                                              </Label>
-                                              <Input
-                                                placeholder={fee.amount}
-                                                onChange={(e) =>
-                                                  setChangedFee({
-                                                    ...changedFee,
-                                                    amount: e.target.value,
-                                                  })
-                                                }
-                                              />
-
-                                              <DialogClose>
-                                                <Button
-                                                  variant={"info"}
-                                                  onClick={() => {
-                                                    editFee(fee._id);
-                                                  }}
-                                                >
-                                                  Edit
-                                                </Button>
-                                              </DialogClose>
-                                            </div>
-                                          </DialogDescription>
-                                        </DialogHeader>
-                                      </DialogContent>
-                                    </Dialog>
-                                  </span>
-                                )}
-                              </p>
-                            )}
-                          </>
-                        ))}
-                      </>
-                    )}
-                    <hr />
-                    <p className="py-2 text-1xl font-semibold">
-                      Total Fee: &#8377; {Number(total)}
-                    </p>
-                    <p className="py-2 text-1xl text-green-600 font-semibold">
-                      Paid Fee: &#8377; {Number(paidFee)}
-                    </p>
-                    <p className="py-2 text-1xl text-red-600 font-bold">
-                      Remaining Fee: &#8377; {Number(total) - Number(paidFee)}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="flex justify-around mt-20">
+                  <div className="flex justify-around mt-20">
                 <Sheet>
                   <SheetTrigger asChild>
                     {!student.college_id.lock && (
@@ -693,6 +554,145 @@ export default function StudentPage({ params }: any) {
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
+              </div>
+                </div>
+                <div className="flex flex-col border-b-2 sm:border-b-0 sm:border-r-2 p-4 rounded-t-md sm:rounded-l-md shadow-lg bg-white">
+                  <h1 className="text-2xl font-semibold underline text-center">
+                    Student Details
+                  </h1>
+                  <p className="py-2 text-1xl">
+                    Name: {student.f_name} {student.l_name}
+                  </p>
+                  <p className="py-2 text-1xl">Roll No: {student.roll_no}</p>
+                  <p className="py-2 text-1xl">Course: {student.course}</p>
+                  <p className="py-2 text-1xl">
+                    Session: {student.session_start_year} -{" "}
+                    {student.session_end_year}
+                  </p>
+                  <p className="py-2 text-1xl">
+                    Father Name: {student.father_name}
+                  </p>
+                  <p className="py-2 text-1xl">
+                    Mother Name: {student.mother_name}
+                  </p>
+                  <div className="flex">
+                    <p className="py-2 text-1xl">Contact:</p>
+
+                    <div className="pl-12 pt-1 text-1xl flex flex-col">
+                      <Link href={`mailto:${student.email}`} className="py-2">
+                        Email: {student.email}
+                      </Link>
+                      <Link href={`tel:${student.phone}`} className="py-2">
+                        Phone: {student.phone}
+                      </Link>
+                      <p className="py-2">
+                        Address: {student.address}, {student.city},{" "}
+                        {student.state} ({student.pincode})
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="p-4 bg-white shadow-lg rounded-b-md sm:rounded-r-md">
+                  <div className="flex flex-col mt-4">
+                    <h1 className="text-2xl font-semibold underline text-center">
+                      Fee Details
+                    </h1>
+                    {feeData && (
+                      <>
+                        {feeData.map((fee: any) => (
+                          <>
+                            {fee.type === "fee" && (
+                              <p className="py-2 text-1xl" key={fee._id}>
+                                {fee.name}: &#8377; {fee.amount}{" "}
+                                {!student.college_id.lock && (
+                                  <span>
+                                    <Dialog>
+                                      <DialogTrigger>
+                                        <Button variant={"link"}>Edit</Button>
+                                      </DialogTrigger>
+                                      <DialogContent>
+                                        <DialogHeader>
+                                          <DialogTitle>
+                                            Edit {fee.name}
+                                          </DialogTitle>
+                                          <DialogDescription>
+                                            <p className="my-2 text-orange-500">
+                                              Only fill the fields you want to
+                                              edit
+                                            </p>
+                                            <div className="flex flex-col gap-2 justify-center">
+                                              <Label htmlFor="name">
+                                                Fee Name
+                                              </Label>
+                                              <Input
+                                                placeholder={fee.name}
+                                                onChange={(e) =>
+                                                  setChangedFee({
+                                                    ...changedFee,
+                                                    name: e.target.value,
+                                                  })
+                                                }
+                                              />
+                                              <Label htmlFor="description">
+                                                Description
+                                              </Label>
+                                              <Input
+                                                placeholder={fee.description}
+                                                onChange={(e) =>
+                                                  setChangedFee({
+                                                    ...changedFee,
+                                                    description: e.target.value,
+                                                  })
+                                                }
+                                              />
+                                              <Label htmlFor="amount">
+                                                Amount
+                                              </Label>
+                                              <Input
+                                                placeholder={fee.amount}
+                                                onChange={(e) =>
+                                                  setChangedFee({
+                                                    ...changedFee,
+                                                    amount: e.target.value,
+                                                  })
+                                                }
+                                              />
+
+                                              <DialogClose>
+                                                <Button
+                                                  variant={"info"}
+                                                  onClick={() => {
+                                                    editFee(fee._id);
+                                                  }}
+                                                >
+                                                  Edit
+                                                </Button>
+                                              </DialogClose>
+                                            </div>
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                      </DialogContent>
+                                    </Dialog>
+                                  </span>
+                                )}
+                              </p>
+                            )}
+                          </>
+                        ))}
+                      </>
+                    )}
+                    <hr />
+                    <p className="py-2 text-1xl font-semibold">
+                      Total Fee: &#8377; {Number(total)}
+                    </p>
+                    <p className="py-2 text-1xl text-green-600 font-semibold">
+                      Paid Fee: &#8377; {Number(paidFee)}
+                    </p>
+                    <p className="py-2 text-1xl text-red-600 font-bold">
+                      Remaining Fee: &#8377; {Number(total) - Number(paidFee)}
+                    </p>
+                  </div>
+                </div>
               </div>
             </>
           )}

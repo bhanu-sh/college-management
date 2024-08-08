@@ -255,7 +255,7 @@ export default function CollegeDashboard() {
               <ExpenseCard
               title="Spent"
               amount={formatCurrency(expenses)} 
-              link="/expenses" />
+              link="/dashboard/expenses" />
               <ExpenseCard
                 title="Pending Fees"
                 amount={formatCurrency(pendingFees)}

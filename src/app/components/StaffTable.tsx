@@ -5,6 +5,17 @@ import axios from "axios";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { jsonToExcel } from "@/helpers/jsonToExcel";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export default function StaffTable({
   role,
@@ -157,13 +168,31 @@ export default function StaffTable({
           >
             Export to Excel
           </button>
-          <button
-            className="px-3 py-1 bg-red-500 text-white rounded-md ml-2 disabled:opacity-50"
-            disabled={selected.length === 0 || lock}
-            onClick={deleteSelectedUsers}
-          >
-            Delete Selected
-          </button>
+          <AlertDialog>
+            <AlertDialogTrigger>
+              <button
+                className="px-3 py-1 bg-red-500 text-white rounded-md ml-2 disabled:opacity-50"
+                disabled={selected.length === 0 || lock}
+              >
+                Delete Selected
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  this student and remove all related data from our servers.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={deleteSelectedUsers}>
+                  Continue
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
         <div className="relative text-gray-600 focus-within:text-gray-400 my-3">
           <input
@@ -252,7 +281,13 @@ export default function StaffTable({
                   <td className="px-6 py-4 bg-gray-50 ">{user.f_name}</td>
                   <td className="px-6 py-4  ">{user.l_name}</td>
                   <td className="px-6 py-4 bg-gray-50 ">{user.phone}</td>
-                  <td className="px-6 py-4 ">{user.dob.toLocaleDateString}</td>
+                  <td className="px-6 py-4 ">
+                    {new Date(user.dob).toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </td>
                   <td className="px-6 py-4 bg-gray-50 ">
                     {user.address +
                       ", " +
@@ -264,19 +299,44 @@ export default function StaffTable({
                       ")"}
                   </td>
                   <td className="px-6 py-3 flex flex-col">
-                    <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400 mb-2">
-                      <Link href={`/dashboard/staffs/${user._id}`}>View</Link>
-                    </button>
-                    {(role === "CollegeAdmin" || role === "Admin") && (
-                      <button
-                      disabled={lock}
-                        className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 disabled:opacity-50 disabled:hover:bg-red-500"
-                        onClick={() => {
-                          deleteUser(user._id);
-                        }}
-                      >
-                        Delete
+                    <Link className="mb-2" href={`/staffs/${user._id}`}>
+                      <button className="bg-green-500 w-full hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400">
+                        View
                       </button>
+                    </Link>
+                    {(role === "CollegeAdmin" || role === "Admin") && (
+                      <AlertDialog>
+                        <AlertDialogTrigger>
+                          <button
+                            disabled={lock}
+                            className="bg-red-500 w-full hover:bg-red-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-red-400 disabled:opacity-50 disabled:bg-red-500"
+                          >
+                            Delete
+                          </button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Are you absolutely sure?
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will
+                              permanently delete this student and remove all
+                              related data from our servers.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => {
+                                deleteUser(user._id);
+                              }}
+                            >
+                              Continue
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     )}
                   </td>
                 </tr>

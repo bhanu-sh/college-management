@@ -18,7 +18,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fees = await Fee.find({ college_id });
+    const fees = await Fee.find({ college_id })
+      .populate("college_id")
+      .populate("student_id");
     return NextResponse.json({ data: fees });
   } catch (error: any) {
     console.error("Error finding Fee:", error.message);

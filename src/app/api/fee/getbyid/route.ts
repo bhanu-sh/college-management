@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
 
     const user = await Fee.findById(id)
       .populate("student_id", "f_name l_name course")
-      .populate("college_id", "name address city state pincode contact email");
+      .populate("college_id", "name address city state pincode contact email image");
 
     if (!user) {
       return NextResponse.json({ error: "Fee not found" }, { status: 404 });

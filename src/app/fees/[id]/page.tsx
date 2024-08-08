@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import Loader from "@/app/components/Loader";
 import axios from "axios";
@@ -38,57 +39,58 @@ export default function FeesPage({ params }: any) {
   };
 
   return (
-    <div className="min-h-screen flex w-full justify-center">
+    <div className="min-h-screen fixed inset-0 flex bg-white">
       {loading && <Loader />}
       {fee ? (
-        <div className="bg-white p-8 max-w-md w-full">
-          <div>
+        <div className="bg-white p-8 w-full">
+          <div className="flex flex-col items-center">
+            <p className="bg-black text-white rounded-xl px-2">Receipt</p>
+            <img
+              src={fee.college_id.image}
+              alt={fee.college_id.name}
+              className="h-16 w-16 rounded-full border-4 border-white -mt-2 -ml-56 -mb-12"
+            />
+
             <h1 className="text-2xl font-bold mb-4 text-center">
               {fee.college_id.name}
             </h1>
+
             <div className="text-center text-gray-500 mb-4">
               <span className="text-black font-semibold">Address:</span>{" "}
               {fee.college_id.address}, {fee.college_id.city},{" "}
               {fee.college_id.state} - {fee.college_id.pincode}
             </div>
+            <div>
+              <div className="flex justify-between mb-2">
+                <span className="font-semibold">Receipt No:</span>
+                <span>{fee.receipt_no}</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="font-semibold">Date:</span>
+                <span>
+                  {new Date(fee.date).toLocaleDateString(undefined, {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="font-semibold">Student Name:</span>
+                <span>
+                  {fee.student_id?.f_name} {fee.student_id?.l_name}
+                </span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="font-semibold">Course:</span>
+                <span>{fee.student_id?.course}</span>
+              </div>
+              <div className="flex justify-between mb-2">
+                <span className="font-semibold">Amount Paid:</span>
+                <span>{formatCurrency(fee.amount)}</span>
+              </div>
+            </div>
             <div className="border-t border-gray-200 my-4"></div>
-            <div className="flex justify-between mb-2">
-              <span className="font-semibold">Receipt No:</span>
-              <span>123456</span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span className="font-semibold">Date:</span>
-              <span>
-                {new Date(fee.date).toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
-              </span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span className="font-semibold">Student Name:</span>
-              <span>
-                {fee.student_id?.f_name} {fee.student_id?.l_name}
-              </span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span className="font-semibold">Course:</span>
-              <span>{fee.student_id?.course}</span>
-            </div>
-            <div className="flex justify-between mb-2">
-              <span className="font-semibold">Amount Paid:</span>
-              <span>{formatCurrency(fee.amount)}</span>
-            </div>
-            <div className="border-t border-gray-200 my-4"></div>
-          </div>
-          <div className="text-center">
-            <button
-              onClick={() => window.print()}
-              className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:bg-blue-700"
-            >
-              Print Receipt
-            </button>
           </div>
         </div>
       ) : error ? (
