@@ -67,7 +67,7 @@ const TableHeader: React.FC<{ onSort: (key: string) => void }> = ({
   onSort,
 }) => (
   <thead>
-    <tr>
+    <tr className="border-b-2 border-black">
       <th
         className="px-4 py-2 bg-slate-300 cursor-pointer"
         onClick={() => onSort("date")}
@@ -240,7 +240,7 @@ const ExpensesPage: React.FC = () => {
             <TableHeader onSort={handleSort} />
             <tbody>
               {sortedExpenses.map((expense) => (
-                <tr key={expense._id}>
+                <tr className="border-b-2 border-gray-400" key={expense._id}>
                   <td className="px-4 py-2 bg-slate-300">
                     {new Date(expense.date).toLocaleDateString(undefined, {
                       year: "numeric",
