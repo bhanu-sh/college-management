@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     console.log("Request body:", reqBody);
-    const { user } = reqBody;
+    const { user, college_id } = reqBody;
 
     if (!Array.isArray(user) || user.length === 0) {
       return NextResponse.json(
@@ -40,10 +40,8 @@ export async function POST(request: NextRequest) {
         aadhar,
         course,
         course_fee,
-        paid_fee,
         session_start_year,
         session_end_year,
-        college_id,
       } = student;
 
       try {
@@ -105,35 +103,21 @@ export async function POST(request: NextRequest) {
         // Save Student
         const savedStudent = await newStudent.save();
 
-        const course_receipt_no = (await Fee.countDocuments({})) + 1;
+        const receipt_no = (await Fee.countDocuments({})) + 1;
 
-        const newCourseFee = new Fee({
+        const newFee = new Fee({
           name: "Course Fee",
           description: "Course Fee",
           amount: course_fee,
           type: "fee",
-          receipt_no: course_receipt_no,
+          receipt_no: receipt_no,
           college_id,
           student_id: savedStudent._id,
         });
 
-        await newCourseFee.save();
+        await newFee.save();
 
-        const paid_receipt_no = (await Fee.countDocuments({})) + 1;
-
-        const newPaidFee = new Fee({
-          name: "Paid Fee",
-          description: "Paid Fee",
-          amount: paid_fee,
-          receipt_no: paid_receipt_no,
-          type: "received",
-          college_id,
-          student_id: savedStudent._id,
-        });
-
-        await newPaidFee.save();
-
-        newStudent.fees.push(newCourseFee._id, newPaidFee._id);
+        newStudent.fees.push(newFee._id);
         await newStudent.save();
 
         results.push({

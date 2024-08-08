@@ -60,9 +60,10 @@ export default function AddStudents() {
         }));
 
         console.log("Converted JSON:", formattedJson); // Log the formatted JSON
-
+        console.log("College ID:", session?.user.college_id);
         const res = await axios.post("/api/student/bulkadd", {
           user: formattedJson,
+          college_id: session?.user.college_id,
         });
 
         if (res.status !== 200) {
