@@ -15,6 +15,12 @@ const courseSchema = new mongoose.Schema(
       ref: "college",
       required: true,
     },
+    students: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "student",
+      },
+    ],
   },
   {
     timestamps: true,

@@ -18,8 +18,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const fees = await Course.find({ college_id });
-    return NextResponse.json({ data: fees });
+    const course = await Course.find({ college_id }).populate("students");
+    return NextResponse.json({ data: course });
   } catch (error: any) {
     console.error("Error finding Fee:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });

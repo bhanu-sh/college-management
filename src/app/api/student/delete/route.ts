@@ -1,6 +1,7 @@
 import { connect } from "@/dbConfig/dbConfig";
 import Student from "@/models/studentModel";
 import Fee from "@/models/feeModel";
+import Course from "@/models/courseModel";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
@@ -35,6 +36,15 @@ export async function POST(request: NextRequest) {
 
         //delete fee records of the student
         await Fee.deleteMany({ student_id: user_id });
+
+        const courses = await Course.find({ students: user_id });
+        for (const course of courses) {
+          course.students = course.students.filter(
+            (student_id: { toString: () => any }) =>
+              student_id.toString() !== user_id
+          );
+          await course.save();
+        }
 
         await Student.deleteOne({ _id: user_id });
 

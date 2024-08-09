@@ -10,6 +10,7 @@ export default function FeesPage({ params }: any) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any | null>(null);
   const [fee, setFee] = useState<any | null>(null);
+  const [course, setCourse] = useState<any | null>(null);
 
   const fetchData = async (id: string) => {
     setLoading(true);
@@ -26,9 +27,29 @@ export default function FeesPage({ params }: any) {
       setLoading(false);
     }
   };
+
+  const fetchCourse = async (id: string) => {
+    try {
+      const res = await axios.get(`/api/course/getbyid`, {
+        params: { id },
+      });
+      setCourse(res.data.data);
+      console.log(res.data);
+    } catch (error: any) {
+      setError(error);
+      console.error("Error fetching course details:", error.message);
+    }
+  };
+
   useEffect(() => {
     fetchData(id);
   }, [id]);
+
+  useEffect(() => {
+    if (fee) {
+      fetchCourse(fee.student_id.course);
+    }
+  }, [fee]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("en-IN", {
@@ -83,7 +104,7 @@ export default function FeesPage({ params }: any) {
               </div>
               <div className="flex justify-between mb-2">
                 <span className="font-semibold">Course:</span>
-                <span>{fee.student_id?.course}</span>
+                <span>{course?.name}</span>
               </div>
               <div className="flex justify-between mb-2">
                 <span className="font-semibold">Amount Paid:</span>

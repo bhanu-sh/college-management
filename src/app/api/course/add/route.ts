@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
       name,
       duration,
       college_id,
+      students: [],
     });
 
     // Save Course

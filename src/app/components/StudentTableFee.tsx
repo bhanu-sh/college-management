@@ -17,20 +17,25 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export default function StudentTable({
+export default function StudentTableFee({
   collegeId,
   role,
   lock,
+  name,
 }: {
   collegeId: string;
   role: string;
   lock: boolean;
+  name: string;
 }) {
   const [user, setUser] = useState([]);
+  const [fee, setFee] = useState([]);
   const [selected, setSelected] = useState<string[]>([]);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
+  const [totalFee, setTotalFee] = useState(0);
+  const [dueFee, setDueFee] = useState(0);
 
   const getStudents = async () => {
     try {
@@ -38,8 +43,35 @@ export default function StudentTable({
       const response = await axios.post(`/api/student/getbycollege`, {
         college_id: collegeId,
       });
-      setUser(response.data.data);
-      setSearchResults(response.data.data); // Initialize search results with all students
+      //filter user by course name
+      const filteredUser = response.data.data.filter(
+        (user: any) => user.course.name === name
+      );
+
+      setUser(filteredUser);
+      setSearchResults(filteredUser);
+    } catch (error: any) {
+      console.log("Error", error.response.data.error);
+    }
+  };
+
+  const getFee = async () => {
+    try {
+      const response = await axios.post(`/api/fee/getbycollege`, {
+        college_id: collegeId,
+      });
+      var total = 0;
+      var paid = 0;
+      response.data.data.forEach((item: any) => {
+        if (item.type === "fee") {
+          total += item.amount;
+        } else {
+          paid += item.amount;
+        }
+      });
+      setTotalFee(total);
+      setDueFee(total - paid);
+      setFee(response.data.data);
     } catch (error: any) {
       console.log("Error", error.response.data.error);
     }
@@ -110,7 +142,6 @@ export default function StudentTable({
         user.l_name.toLowerCase().includes(query.toLowerCase()) ||
         user.phone.toLowerCase().includes(query.toLowerCase()) ||
         user.email.toLowerCase().includes(query.toLowerCase()) ||
-        user.course.toLowerCase().includes(query.toLowerCase()) ||
         user.session_start_year.toString().includes(query.toLowerCase()) ||
         user.roll_no.toLowerCase().includes(query.toLowerCase())
       );
@@ -148,6 +179,7 @@ export default function StudentTable({
 
   useEffect(() => {
     searchUser(search);
+    getFee();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [search]);
 
@@ -239,51 +271,36 @@ export default function StudentTable({
                 <th
                   scope="col"
                   className="px-6 py-3 cursor-pointer bg-gray-50"
+                  onClick={() => sortData("roll_no")}
+                >
+                  Roll No
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 cursor-pointer"
                   onClick={() => sortData("f_name")}
                 >
                   Name
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 cursor-pointer"
-                  onClick={() => sortData("dob")}
-                >
-                  DOB
+                <th scope="col" className="px-6 py-3 cursor-pointer bg-gray-50">
+                  Father&apos;s Name
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 cursor-pointer bg-gray-50"
-                  onClick={() => sortData("phone")}
-                >
+
+                <th scope="col" className="px-6 py-3 cursor-pointer">
                   Phone
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 cursor-pointer"
-                  onClick={() => sortData("email")}
-                >
-                  Email
-                </th>
-                <th
-                  scope="col"
                   className="px-6 py-3 cursor-pointer bg-gray-50"
-                  onClick={() => sortData("course")}
-                >
-                  Course
-                </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 cursor-pointer"
                   onClick={() => sortData("session_start_year")}
                 >
                   Session
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 cursor-pointer bg-gray-50"
-                  onClick={() => sortData("roll_no")}
-                >
-                  Roll No
+                <th scope="col" className="px-6 py-3 cursor-pointer">
+                  Total Fee
+                </th>
+                <th scope="col" className="px-6 py-3 cursor-pointer bg-gray-50">
+                  Due Fee
                 </th>
                 <th scope="col" className="px-6 py-3">
                   Actions
@@ -306,21 +323,45 @@ export default function StudentTable({
                       }}
                     />
                   </td>
-                  <td className="px-6 py-4 bg-gray-50">
+                  <td className="px-6 py-4 bg-gray-50">{user.roll_no}</td>
+                  <td className="px-6 py-4">
                     {user.f_name} {user.l_name}
                   </td>
-                  <td className="px-6 py-4">
-                    {new Date(user.dob).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                  <td className="px-6 py-4 bg-gray-50">{user.father_name}</td>
+                  <td className="px-6 py-4">{user.phone}</td>
+                  <td className="px-6 py-4 bg-gray-50">
+                    {user.session_start_year} - {user.session_end_year}
                   </td>
-                  <td className="px-6 py-4 bg-gray-50">{user.phone}</td>
-                  <td className="px-6 py-4">{user.email}</td>
-                  <td className="px-6 py-4 bg-gray-50">{user.course?.name}</td>
-                  <td className="px-6 py-4">{user.session_start_year}</td>
-                  <td className="px-6 py-4 bg-gray-50">{user.roll_no}</td>
+                  <td className="px-6 py-4">
+                    {fee
+                      .filter((fee: any) => fee.student_id._id === user._id)
+                      .reduce(
+                        (acc: number, curr: any) =>
+                          curr.type === "fee" ? acc + curr.amount : acc,
+                        0
+                      )}
+                  </td>
+                  <td className="px-6 py-4 bg-gray-50">
+                    {
+                      //reduced received fee from total fee
+                      fee
+                        .filter((fee: any) => fee.student_id._id === user._id)
+                        .reduce(
+                          (acc: number, curr: any) =>
+                            curr.type === "fee" ? acc + curr.amount : acc,
+                          0
+                        ) -
+                        fee
+                          .filter((fee: any) => fee.student_id._id === user._id)
+                          .reduce(
+                            (acc: number, curr: any) =>
+                              curr.type === "received"
+                                ? acc + curr.amount
+                                : acc,
+                            0
+                          )
+                    }
+                  </td>
 
                   <td className="px-6 py-3 flex flex-col">
                     <Link
@@ -372,6 +413,9 @@ export default function StudentTable({
               ))}
             </tbody>
           </table>
+          <h2 className="font-semibold text-2xl mt-2 mb-4">
+            Total Fee: {totalFee} | Due Fee: {dueFee}
+          </h2>
         </div>
       </div>
     </>

@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     console.log("Request body:", reqBody); // Log the request body
-    const { staff } = reqBody;
+    const { staff, college_id } = reqBody;
 
     if (!Array.isArray(staff) || staff.length === 0) {
       return NextResponse.json(
@@ -33,7 +33,6 @@ export async function POST(request: NextRequest) {
         address,
         city,
         state,
-        college_id,
         password,
         position,
         aadhar,

@@ -46,6 +46,7 @@ export default function StaffDashboard() {
   const [college, setCollege] = useState<College | null>(null);
   const [students, setStudents] = useState([]);
   const [staffs, setStaffs] = useState([]);
+  const [course, setCourse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pendingFees, setPendingFees] = useState(0);
@@ -56,28 +57,38 @@ export default function StaffDashboard() {
   const handleFetchData = async () => {
     setLoading(true);
     try {
-      const [collegeRes, studentsRes, feesRes, staffsRes, expensesRes] =
-        await Promise.all([
-          axios.post(`/api/college/getbyid`, {
-            college_id: session?.user.college_id,
-          }),
-          axios.post(`/api/student/getbycollege`, {
-            college_id: session?.user.college_id,
-          }),
-          axios.post(`/api/fee/getbycollege`, {
-            college_id: session?.user.college_id,
-          }),
-          axios.post(`/api/user/staff/getbycollege`, {
-            college_id: session?.user.college_id,
-          }),
-          axios.post(`/api/expense/getbycollege`, {
-            college_id: session?.user.college_id,
-          }),
-        ]);
+      const [
+        collegeRes,
+        studentsRes,
+        feesRes,
+        staffsRes,
+        expensesRes,
+        courseRes,
+      ] = await Promise.all([
+        axios.post(`/api/college/getbyid`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/student/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/fee/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/user/staff/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/expense/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/course/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+      ]);
 
       setCollege(collegeRes.data);
       setStudents(studentsRes.data.data);
       setStaffs(staffsRes.data.data);
+      setCourse(courseRes.data.data);
 
       const totalFees = feesRes.data.data.reduce(
         (acc: number, fee: any) =>
@@ -148,7 +159,7 @@ export default function StaffDashboard() {
         <h1 className="text-2xl font-semibold text-gray-500 mb-5">
           No College Added
         </h1>
-        <Link href="/add/college">
+        <Link href="/dashboard/add/college">
           <button className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md">
             Add College
           </button>
@@ -175,13 +186,12 @@ export default function StaffDashboard() {
                 count={students.length}
                 link="/dashboard/students"
               />
-              <CountCard title="Staffs" count={staffs.length} link="/dashboard/staffs" />
+              <CountCard
+                title="Courses"
+                count={course.length}
+                link="/dashboard/courses"
+              />
             </div>
-          </div>
-          <hr />
-          <div className="flex justify-center gap-8 items-end py-5 border-b-2 border-gray-300">
-            <h2 className="text-3xl font-bold">Lock Status:</h2>
-            <CollegeLock collegeId={String(session.user.college_id)} />
           </div>
           <hr />
           <div className="flex flex-col justify-center py-5 border-b-2 border-gray-300">
@@ -259,11 +269,7 @@ export default function StaffDashboard() {
               </Dialog>
             </div>
             <div className="flex flex-wrap justify-around">
-              <ExpenseCard
-                title="Spent"
-                amount={formatCurrency(expenses)}
-                link="/dashboard/expenses"
-              />
+
               <ExpenseCard
                 title="Pending Fees"
                 amount={formatCurrency(pendingFees)}

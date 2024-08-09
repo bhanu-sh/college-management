@@ -1,6 +1,7 @@
 import { connect } from "@/dbConfig/dbConfig";
 import Student from "@/models/studentModel";
 import Fee from "@/models/feeModel";
+import Course from "@/models/courseModel";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
@@ -10,13 +11,19 @@ export async function POST(request: NextRequest) {
   try {
     const reqBody = await request.json();
     console.log("Request body:", reqBody);
-    const { user, college_id } = reqBody;
+    const { user, college_id, course_id } = reqBody;
 
     if (!Array.isArray(user) || user.length === 0) {
       return NextResponse.json(
         { error: "Invalid or empty Student array provided" },
         { status: 400 }
       );
+    }
+
+    const checkCourse = await Course.findOne({ _id: course_id });
+
+    if (!checkCourse) {
+      return NextResponse.json({ error: "Course not found" }, { status: 404 });
     }
 
     const results = [];
@@ -38,7 +45,6 @@ export async function POST(request: NextRequest) {
         password,
         roll,
         aadhar,
-        course,
         course_fee,
         session_start_year,
         session_end_year,
@@ -95,7 +101,7 @@ export async function POST(request: NextRequest) {
           role: "Student",
           roll_no: roll,
           aadhar,
-          course,
+          course: course_id,
           session_start_year,
           session_end_year,
         });

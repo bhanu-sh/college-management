@@ -1,16 +1,30 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
 
 export default function CoursesPage() {
   const { data: session } = useSession();
 
   const [courses, setCourses] = useState([]);
+  const [addedCourse, setAddedCourse] = useState({
+    name: "",
+    duration: 0,
+  });
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
 
   const handleFetchData = async () => {
     setLoading(true);
@@ -18,9 +32,26 @@ export default function CoursesPage() {
       const res = await axios.post(`/api/course/getbycollege`, {
         college_id: session?.user.college_id,
       });
+      console.log(res.data.data);
       setCourses(res.data.data);
     } catch (error: any) {
-      setError(error.message);
+      console.log("Getting courses failed", error.response);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addCourse = async () => {
+    setLoading(true);
+    try {
+      await axios.post(`/api/course/add`, {
+        college_id: session?.user.college_id,
+        name: addedCourse.name,
+        duration: addedCourse.duration,
+      });
+      handleFetchData();
+    } catch (error: any) {
+      console.log("Adding course failed", error.response);
     } finally {
       setLoading(false);
     }
@@ -42,14 +73,16 @@ export default function CoursesPage() {
                 key={course._id}
                 className="w-80 p-4 bg-green-100 rounded-lg shadow-md my-5"
               >
-                <div className="p-4 text-center">
-                  <h2 className="text-xl  font-semibold">Course 1</h2>
-                  <h1 className="text-4xl">4</h1>
-                  <div className="flex justify-between items-center mt-4">
-                    <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400">
-                      View
-                    </button>
-                  </div>
+                <h2 className="text-xl font-semibold">
+                  {course.name} ({course.duration} years)
+                </h2>
+                <h1 className="text-4xl text-red-500 font-semibold">
+                  {course.students?.length} Students
+                </h1>
+                <div className="flex justify-between items-center mt-4">
+                  <Link href={`/dashboard/courses/${course.name}`}>
+                    <Button variant="default">View</Button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -60,13 +93,44 @@ export default function CoursesPage() {
           </h1>
         )}
       </div>
-      <button>
-        <Link href="dashboard/add/course">
-          <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 mt-4 focus:ring-green-400">
-            Add Course
-          </button>
-        </Link>
-      </button>
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <div className="inline-block">
+            <Button variant="info">Add Course</Button>
+          </div>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add Course</DialogTitle>
+            <DialogDescription>
+              <div className="flex flex-col gap-2 justify-center">
+                <Input
+                  placeholder="Course Name"
+                  value={addedCourse.name}
+                  onChange={(e) =>
+                    setAddedCourse({ ...addedCourse, name: e.target.value })
+                  }
+                />
+                <Input
+                  placeholder="Duration"
+                  type="number"
+                  value={addedCourse.duration}
+                  onChange={(e) =>
+                    setAddedCourse({
+                      ...addedCourse,
+                      duration: parseInt(e.target.value),
+                    })
+                  }
+                />
+                <Button variant="info" onClick={addCourse}>
+                  Add Course
+                </Button>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

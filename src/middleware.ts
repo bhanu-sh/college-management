@@ -8,7 +8,8 @@ export default withAuth(
       return NextResponse.next();
     } else {
       if (
-        req.nextUrl.pathname.startsWith("/add/college") &&
+        (req.nextUrl.pathname.startsWith("/dashboard/add/college") ||
+          req.nextUrl.pathname.startsWith("/dashboard/add/staff")) &&
         req.nextauth.token?.role !== "CollegeAdmin"
       ) {
         return NextResponse.redirect(new URL("/unauthorized", req.url));
@@ -38,8 +39,7 @@ export const config = {
     "/api/user/getall",
     "/api/user/admin/getall",
     "/api/college/getbyid",
-    "/api/user/student/getbycollege",    
+    "/api/user/student/getbycollege",
     "/api/college/:path*",
-  
   ],
 };

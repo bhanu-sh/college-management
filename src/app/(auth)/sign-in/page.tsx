@@ -2,7 +2,7 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function SignIn() {
@@ -34,13 +34,24 @@ export default function SignIn() {
       toast.error("An error occurred during sign in.");
     }
   };
+
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [router, session]);
+
   return (
     <div>
       {session ? (
         <div className="flex min-h-full flex-col justify-center items-center px-6 py-12 lg:px-8">
           <p className="text-2xl">You are already signed in</p>
-          <button className="bg-orange-600 my-4 text-white px-3 py-1.5 rounded-md"
-          onClick={() => signOut()}>Sign out</button>
+          <button
+            className="bg-orange-600 my-4 text-white px-3 py-1.5 rounded-md"
+            onClick={() => signOut()}
+          >
+            Sign out
+          </button>
         </div>
       ) : (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

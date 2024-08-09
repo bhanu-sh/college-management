@@ -88,6 +88,7 @@ export default function CollegeDashboard() {
       setCollege(collegeRes.data);
       setStudents(studentsRes.data.data);
       setStaffs(staffsRes.data.data);
+      setCourse(courseRes.data.data);
 
       const totalFees = feesRes.data.data.reduce(
         (acc: number, fee: any) =>
@@ -190,7 +191,11 @@ export default function CollegeDashboard() {
                 count={course.length}
                 link="/dashboard/courses"
               />
-              <CountCard title="Staffs" count={staffs.length} link="/dashboard/staffs" />
+              <CountCard
+                title="Staffs"
+                count={staffs.length}
+                link="/dashboard/staffs"
+              />
             </div>
           </div>
           <hr />
