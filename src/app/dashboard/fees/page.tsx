@@ -129,12 +129,6 @@ const FeesPage: React.FC = () => {
     }));
   };
 
-  const calculateTotal = React.useMemo(() => {
-    const total = filteredFees.reduce((sum, fee) => sum + fee.amount, 0);
-    setTotalAmount(total);
-    return total;
-  }, [filteredFees]);
-
   return (
     <div className="flex flex-col justify-center items-center gap-2">
       <h1 className="text-2xl font-semibold">Fees</h1>

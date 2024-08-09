@@ -1,5 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig";
 import Student from "@/models/studentModel";
+import Course from "@/models/courseModel";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
