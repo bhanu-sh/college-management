@@ -1,5 +1,5 @@
 import { connect } from "@/dbConfig/dbConfig";
-import Student from "@/models/studentModel";
+import Course from "@/models/courseModel";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
@@ -18,12 +18,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const users = await Student.find({
-      $and: [{ college_id: college_id }, { role: "Student" }],
-    }).populate("course");
-    return NextResponse.json({ data: users });
+    const fees = await Course.find({ college_id });
+    return NextResponse.json({ data: fees });
   } catch (error: any) {
-    console.error("Error finding staff:", error.message);
+    console.error("Error finding Fee:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

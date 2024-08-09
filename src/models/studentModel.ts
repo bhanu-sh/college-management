@@ -64,7 +64,8 @@ const studentSchema = new mongoose.Schema(
       type: String,
     },
     course: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "course",
     },
     session_start_year: {
       type: String,

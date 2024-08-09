@@ -157,7 +157,7 @@ export default function StaffTable({
       <div className="flex flex-col justify-center">
         <h1 className="text-2xl font-bold text-gray-700 text-center">Staffs</h1>
         <div className="flex justify-between">
-          <Link href="/add/staff">
+          <Link href="/dashboard/add/staff">
             <button className="px-3 py-1 bg-blue-500 text-white rounded-md">
               Add Staff
             </button>

@@ -17,7 +17,7 @@ export default function ExpenseCard({
         <h1 className="text-4xl">{String(amount)}</h1>
         <div className="flex justify-between items-center mt-4">
           <Link href={link} className="mx-auto">
-            <button className="bg-green-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-orange-400">
+            <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400">
               View
             </button>
           </Link>

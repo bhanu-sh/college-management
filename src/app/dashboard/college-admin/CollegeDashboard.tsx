@@ -46,6 +46,7 @@ export default function CollegeDashboard() {
   const [college, setCollege] = useState<College | null>(null);
   const [students, setStudents] = useState([]);
   const [staffs, setStaffs] = useState([]);
+  const [course, setCourse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [pendingFees, setPendingFees] = useState(0);
@@ -56,24 +57,33 @@ export default function CollegeDashboard() {
   const handleFetchData = async () => {
     setLoading(true);
     try {
-      const [collegeRes, studentsRes, feesRes, staffsRes, expensesRes] =
-        await Promise.all([
-          axios.post(`/api/college/getbyid`, {
-            college_id: session?.user.college_id,
-          }),
-          axios.post(`/api/student/getbycollege`, {
-            college_id: session?.user.college_id,
-          }),
-          axios.post(`/api/fee/getbycollege`, {
-            college_id: session?.user.college_id,
-          }),
-          axios.post(`/api/user/staff/getbycollege`, {
-            college_id: session?.user.college_id,
-          }),
-          axios.post(`/api/expense/getbycollege`, {
-            college_id: session?.user.college_id,
-          }),
-        ]);
+      const [
+        collegeRes,
+        studentsRes,
+        feesRes,
+        staffsRes,
+        expensesRes,
+        courseRes,
+      ] = await Promise.all([
+        axios.post(`/api/college/getbyid`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/student/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/fee/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/user/staff/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/expense/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+        axios.post(`/api/course/getbycollege`, {
+          college_id: session?.user.college_id,
+        }),
+      ]);
 
       setCollege(collegeRes.data);
       setStudents(studentsRes.data.data);
@@ -174,6 +184,11 @@ export default function CollegeDashboard() {
                 title="Students"
                 count={students.length}
                 link="/students"
+              />
+              <CountCard
+                title="Courses"
+                count={course.length}
+                link="/dashboard/courses"
               />
               <CountCard title="Staffs" count={staffs.length} link="/staffs" />
             </div>

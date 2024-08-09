@@ -116,7 +116,7 @@ export default function AddStudent() {
           <hr />
           <div className="flex justify-around items-center">
             <p>Add using Excel?</p>
-            <Link className="" href={"/add/student/bulk"}>
+            <Link className="" href={"/dashboard/add/student/bulk"}>
               <button className="p-2 border mt-3 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 hover:bg-gray-200">
                 Bulk Add
               </button>
