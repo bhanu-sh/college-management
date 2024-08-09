@@ -173,9 +173,9 @@ export default function StaffDashboard() {
               <CountCard
                 title="Students"
                 count={students.length}
-                link="/students"
+                link="/dashboard/students"
               />
-              <CountCard title="Staffs" count={staffs.length} link="/staffs" />
+              <CountCard title="Staffs" count={staffs.length} link="/dashboard/staffs" />
             </div>
           </div>
           <hr />
@@ -267,7 +267,7 @@ export default function StaffDashboard() {
               <ExpenseCard
                 title="Pending Fees"
                 amount={formatCurrency(pendingFees)}
-                link="/fees"
+                link="/dashboard/fees"
               />
             </div>
           </div>

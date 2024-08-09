@@ -58,13 +58,13 @@ export default function RootLayout({
             Logout
           </Button>
           <p>
-            Please contact your college admin to renew the subscription to
+            Please contact us to renew the subscription to
             continue using the app.
           </p>
           {/* email below */}
-          <Link href={`mailto:bhanu1234sharma@gmail.com`}>
-            <p className="text-blue-500 underline">Email</p>
-          </Link>
+          <a href={`mailto: bhanu1234sharma@gmail.com`}>
+            <p className="text-blue-500 underline">bhanu1234sharma@gmail.com</p>
+          </a>
         </div>
       )}
     </div>

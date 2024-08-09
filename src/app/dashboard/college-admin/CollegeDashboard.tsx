@@ -158,7 +158,7 @@ export default function CollegeDashboard() {
         <h1 className="text-2xl font-semibold text-gray-500 mb-5">
           No College Added
         </h1>
-        <Link href="/add/college">
+        <Link href="/dashboard/add/college">
           <button className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-md">
             Add College
           </button>
@@ -183,14 +183,14 @@ export default function CollegeDashboard() {
               <CountCard
                 title="Students"
                 count={students.length}
-                link="/students"
+                link="/dashboard/students"
               />
               <CountCard
                 title="Courses"
                 count={course.length}
                 link="/dashboard/courses"
               />
-              <CountCard title="Staffs" count={staffs.length} link="/staffs" />
+              <CountCard title="Staffs" count={staffs.length} link="/dashboard/staffs" />
             </div>
           </div>
           <hr />
@@ -282,7 +282,7 @@ export default function CollegeDashboard() {
               <ExpenseCard
                 title="Pending Fees"
                 amount={formatCurrency(pendingFees)}
-                link="/fees"
+                link="/dashboard/fees"
               />
             </div>
           </div>

@@ -108,7 +108,7 @@ export default function CollegePage({ params }: any) {
                   <h1 className="text-4xl">{staffs.length}</h1>
                   <div className="flex justify-between items-center mt-4 ">
                     <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 mx-auto focus:ring-blue-400">
-                      <Link href={`/staffs/${college?.slug}`}>View</Link>
+                      <Link href={`/dashboard/staffs/${college?.slug}`}>View</Link>
                     </button>
                   </div>
                 </div>

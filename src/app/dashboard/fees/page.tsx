@@ -208,7 +208,7 @@ const FeesPage: React.FC = () => {
                   <td className="px-4 py-2 bg-white">
                     <Link
                       className="mb-2"
-                      href={`/students/${fee.student_id._id}`}
+                      href={`/dashboard/students/${fee.student_id._id}`}
                     >
                       <button>
                         {fee.student_id.f_name} {fee.student_id.l_name}
@@ -220,7 +220,7 @@ const FeesPage: React.FC = () => {
                     {formatCurrency(fee.amount)}
                   </td>
                   <td className="px-4 py-2 bg-blue-100">
-                    <Link href={`/fees/${fee._id}`}>
+                    <Link href={`/dashboard/fees/${fee._id}`}>
                       <Button variant={"link"}>View</Button>
                     </Link>
                   </td>

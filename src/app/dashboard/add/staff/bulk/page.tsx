@@ -64,7 +64,7 @@ export default function AddStaffs() {
         console.log("Response data:", data); // Log the response data
         toast.remove();
         toast.success("Staff members uploaded successfully");
-        router.push("/staffs");
+        router.push("/dashboard/staffs");
         // Handle success, possibly update state to reflect successful upload
       } catch (error) {
         console.error("An error occurred:", error);
