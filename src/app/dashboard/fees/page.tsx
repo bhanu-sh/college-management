@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 interface Fee {
   _id: string;
-  student_id: {
+  student_id?: {
     _id: any;
     f_name: string;
     l_name: string;
@@ -208,10 +208,10 @@ const FeesPage: React.FC = () => {
                   <td className="px-4 py-2 bg-white">
                     <Link
                       className="mb-2"
-                      href={`/dashboard/students/${fee.student_id._id}`}
+                      href={`/dashboard/students/${fee.student_id?._id}`}
                     >
                       <button>
-                        {fee.student_id.f_name} {fee.student_id.l_name}
+                        {fee.student_id?.f_name} {fee.student_id?.l_name}
                       </button>
                     </Link>
                   </td>
