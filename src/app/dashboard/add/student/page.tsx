@@ -76,7 +76,10 @@ export default function AddStudent() {
     try {
       setLoading(true);
       setStudent({ ...student, college_id: session?.user.college_id });
-      const response = await axios.post("/api/student/add", student);
+      const response = await axios.post("/api/student/add", {
+        student,
+        college_id: session?.user.college_id,
+      });
       console.log("Student Added Successfully", response.data);
       toast.success("Student Added");
       router.push("/dashboard");

@@ -55,7 +55,7 @@ const studentSchema = new mongoose.Schema(
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "college",
+      ref: "colleges",
     },
     roll_no: {
       type: String,
@@ -65,7 +65,7 @@ const studentSchema = new mongoose.Schema(
     },
     course: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "course",
+      ref: "courses",
     },
     session_start_year: {
       type: String,
@@ -76,7 +76,7 @@ const studentSchema = new mongoose.Schema(
     fees: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "fee",
+        ref: "fees",
       },
     ],
   },
@@ -86,6 +86,6 @@ const studentSchema = new mongoose.Schema(
 );
 
 const Student =
-  mongoose.models.student || mongoose.model("student", studentSchema);
+  mongoose.models.students || mongoose.model("students", studentSchema);
 
 export default Student;

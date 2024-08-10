@@ -12,13 +12,13 @@ const courseSchema = new mongoose.Schema(
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "college",
+      ref: "colleges",
       required: true,
     },
     students: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "student",
+        ref: "students",
       },
     ],
   },
@@ -27,6 +27,6 @@ const courseSchema = new mongoose.Schema(
   }
 );
 
-const Course = mongoose.models.course || mongoose.model("course", courseSchema);
+const Course = mongoose.models.courses || mongoose.model("courses", courseSchema);
 
 export default Course;

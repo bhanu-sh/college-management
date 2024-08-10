@@ -28,12 +28,12 @@ const feeSchema = new mongoose.Schema(
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "college",
+      ref: "colleges",
       required: true,
     },
     student_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "student",
+      ref: "students",
       required: true,
     },
     date: {
@@ -46,6 +46,6 @@ const feeSchema = new mongoose.Schema(
   }
 );
 
-const Fee = mongoose.models.fee || mongoose.model("fee", feeSchema);
+const Fee = mongoose.models.fees || mongoose.model("fees", feeSchema);
 
 export default Fee;

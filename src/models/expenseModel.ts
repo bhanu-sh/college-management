@@ -20,7 +20,7 @@ const expenseSchema = new mongoose.Schema(
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "college",
+      ref: "colleges",
       required: true,
     },
     date: {
@@ -34,6 +34,6 @@ const expenseSchema = new mongoose.Schema(
 );
 
 const Expense =
-  mongoose.models.expense || mongoose.model("expense", expenseSchema);
+  mongoose.models.expenses || mongoose.model("expenses", expenseSchema);
 
 export default Expense;

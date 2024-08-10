@@ -53,7 +53,7 @@ const collegeSchema = new mongoose.Schema(
     expenses: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "expense",
+        ref: "expenses",
       },
     ],
   },
@@ -63,6 +63,6 @@ const collegeSchema = new mongoose.Schema(
 );
 
 const College =
-  mongoose.models.college || mongoose.model("college", collegeSchema);
+  mongoose.models.colleges || mongoose.model("colleges", collegeSchema);
 
 export default College;

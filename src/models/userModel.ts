@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema(
     },
     college_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "college",
+      ref: "colleges",
     },
     roll_no: {
       type: String,
@@ -74,6 +74,6 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const User = mongoose.models.user || mongoose.model("user", userSchema);
+const User = mongoose.models.users || mongoose.model("users", userSchema);
 
 export default User;
