@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ export default function AddStudent() {
   const [collegeLock, setCollegeLock] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [course, setCourse] = useState<any[]>([]);
 
   const getCollegeLock = async () => {
     try {
@@ -44,6 +46,29 @@ export default function AddStudent() {
       setCollegeLock(response.data.lock);
     } catch (error: any) {
       console.log("Getting lock failed", error.response);
+    }
+  };
+
+  const getCourses = async () => {
+    try {
+      if (!session?.user?.college_id) {
+        console.warn("No college ID found in session.");
+        return;
+      }
+
+      const response = await axios.post("/api/course/getbycollege", {
+        college_id: session.user.college_id,
+      });
+      console.log("Courses response:", response.data);
+
+      if (response.data && Array.isArray(response.data.data)) {
+        setCourse(response.data.data);
+        setStudent({ ...student, course: response.data.data[0]._id });
+      } else {
+        console.error("Unexpected response format:", response.data);
+      }
+    } catch (error: any) {
+      console.log("Getting courses failed", error.response);
     }
   };
 
@@ -61,6 +86,12 @@ export default function AddStudent() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (session) {
+      getCourses();
+    }
+  }, [session]);
 
   useEffect(() => {
     if (
@@ -278,15 +309,30 @@ export default function AddStudent() {
             onChange={(e) => setStudent({ ...student, aadhar: e.target.value })}
           />
           <label htmlFor="course">Course</label>
-          <input
-            className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"
-            id="course"
-            type="text"
-            required
-            value={student.course}
-            placeholder="Course"
-            onChange={(e) => setStudent({ ...student, course: e.target.value })}
-          />
+          <div className="flex flex-col">
+            <label htmlFor="course">Select Course</label>
+            {course.length > 0 && (
+              <select
+                name="course"
+                id="course"
+                className="w-full h-10 rounded-md border border-input bg-white px-3 py-2 text-sm text-gray-400"
+                onChange={(e) => {
+                  setStudent({ ...student, course: e.target.value });
+                  console.log("Selected Course ID:", e.target.value); // Log the selected course ID
+                }}
+              >
+                {course.length > 0 ? (
+                  course.map((course: any) => (
+                    <option key={course._id} value={course._id}>
+                      {course.name}
+                    </option>
+                  ))
+                ) : (
+                  <option>No courses available</option>
+                )}
+              </select>
+            )}
+          </div>
           <label htmlFor="session_start_year">Session Start Year</label>
           <input
             className="p-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 text-black"

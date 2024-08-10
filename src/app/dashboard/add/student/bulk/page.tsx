@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 export default function AddStudents() {
   const router = useRouter();
@@ -115,6 +116,17 @@ export default function AddStudents() {
       <h1 className="text-4xl font-bold text-center text-red-500">
         Add Students
       </h1>
+      <br />
+      <Button
+        className="mt-5"
+        onClick={() =>
+          window.open(
+            "https://docs.google.com/spreadsheets/d/1nE6LGcSwYN-qvTeYbx3IW05ULtaqPtKF/edit?usp=drive_link&ouid=104440024889944415834&rtpof=true&sd=true"
+          )
+        }
+      >
+        Download Sample File
+      </Button>
       {collegeLock && (
         <div className="mt-5">
           <p className="text-red-500">

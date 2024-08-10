@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { signOut, useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 export default function AddStaff() {
   const { data: session } = useSession();
@@ -71,6 +72,17 @@ export default function AddStaff() {
           </button>
         </Link>
       </div>
+      <br />
+      <Button
+        className="mt-5"
+        onClick={() =>
+          window.open(
+            "https://docs.google.com/spreadsheets/d/1iYYLaiydt6fbggnx4WwARdwBoEJgkxHB/edit?usp=drive_link&ouid=104440024889944415834&rtpof=true&sd=true"
+          )
+        }
+      >
+        Download Sample File
+      </Button>
       <hr />
       <label htmlFor="f_name">First Name</label>
       <input
