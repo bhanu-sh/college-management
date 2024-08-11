@@ -29,7 +29,6 @@ export default function AddStudent() {
     course: "",
     session_start_year: "",
     session_end_year: "",
-    college_id: session?.user.college_id,
   });
   const [collegeLock, setCollegeLock] = useState(false);
   const [buttonDisabled, setButtonDisabled] = useState(false);
@@ -75,10 +74,9 @@ export default function AddStudent() {
   const onSignup = async () => {
     try {
       setLoading(true);
-      setStudent({ ...student, college_id: session?.user.college_id });
       const response = await axios.post("/api/student/add", {
-        student,
         college_id: session?.user.college_id,
+        ...student,
       });
       console.log("Student Added Successfully", response.data);
       toast.success("Student Added");
