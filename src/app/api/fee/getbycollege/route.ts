@@ -1,5 +1,5 @@
 import { connect } from "@/dbConfig/dbConfig";
-import Fee from "@/models/feeModel";
+import { Fee } from "@/models";
 import { NextRequest, NextResponse } from "next/server";
 
 connect();
