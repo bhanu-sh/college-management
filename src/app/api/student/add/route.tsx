@@ -1,6 +1,6 @@
 import { connect } from "@/dbConfig/dbConfig";
-import Student from "@/models/studentModel";
-import Fee from "@/models/feeModel";
+import { Student } from "@/models";
+import { Fee } from "@/models";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
