@@ -12,6 +12,17 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
@@ -57,6 +68,22 @@ export default function CoursesPage() {
     }
   };
 
+  const deleteCourse = async (course_id: string) => {
+    setLoading(true);
+    try {
+      await axios.delete(`/api/course/delete`, {
+        data: {
+          course_id,
+        },
+      });
+      handleFetchData();
+    } catch (error: any) {
+      console.log("Deleting course failed", error.response);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (session) {
       handleFetchData();
@@ -83,6 +110,32 @@ export default function CoursesPage() {
                   <Link href={`/dashboard/courses/${course.name}`}>
                     <Button variant="default">View</Button>
                   </Link>
+                  {session?.user.role === "CollegeAdmin" && (
+                    <AlertDialog>
+                      <AlertDialogTrigger>
+                        <Button variant="destructive">Delete</Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete this Course from our servers.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteCourse(course._id)}
+                          >
+                            Continue
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               </div>
             ))}

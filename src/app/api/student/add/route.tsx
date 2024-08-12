@@ -1,6 +1,7 @@
 import { connect } from "@/dbConfig/dbConfig";
 import { Student } from "@/models";
 import { Fee } from "@/models";
+import { Course } from "@/models";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
@@ -99,6 +100,12 @@ export async function POST(request: NextRequest) {
 
     savedStudent.fees.push(newCourseFee._id, newPaidFee._id);
     await savedStudent.save();
+
+    // Update Course
+    const courseDetails = await Course.findOne({_id: course});
+    courseDetails.students.push(savedStudent._id);
+
+    await courseDetails.save();
 
     return NextResponse.json({
       message: "Student addedd successfully",

@@ -101,6 +101,7 @@ export default function StudentTableFee({
       });
       if (response.data.success) {
         toast.success(response.data.message);
+        getFee();
       }
     } catch (error: any) {
       console.log("Error", error.response?.data?.error);

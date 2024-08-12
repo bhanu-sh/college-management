@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
@@ -52,6 +53,7 @@ export default function StudentPage({ params }: any) {
   const [total, setTotal] = useState<Number>(0);
   const [paidFee, setPaidFee] = useState<Number>(0);
   const [feeData, setFeeData] = useState<any | null>(null);
+  const [courses, setCourses] = useState<any | null>(null);
   const [changedFee, setChangedFee] = useState({
     name: "",
     description: "",
@@ -74,6 +76,28 @@ export default function StudentPage({ params }: any) {
     student_id: id,
     college_id: "",
   });
+
+  const getCourses = async () => {
+    try {
+      if (!session?.user?.college_id) {
+        console.warn("No college ID found in session.");
+        return;
+      }
+
+      const response = await axios.post("/api/course/getbycollege", {
+        college_id: session.user.college_id,
+      });
+      console.log("Courses response:", response.data);
+
+      if (response.data && Array.isArray(response.data.data)) {
+        setCourses(response.data.data);
+      } else {
+        console.error("Unexpected response format:", response.data);
+      }
+    } catch (error: any) {
+      console.log("Getting courses failed", error.response);
+    }
+  };
 
   const getFeeData = async () => {
     try {
@@ -185,8 +209,13 @@ export default function StudentPage({ params }: any) {
   useEffect(() => {
     getStudent(id);
     getFeeData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  useEffect(() => {
+    if (session) {
+      getCourses();
+    }
+  }, [session]);
 
   return (
     <>
@@ -289,6 +318,28 @@ export default function StudentPage({ params }: any) {
                                 })
                               }
                             />
+                          </div>
+                          <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="course" className="text-right">
+                              Course
+                            </Label>
+                            <Select
+                              onValueChange={(value) =>
+                                setStudent({ ...student, course: value })
+                              }
+                            >
+                              <SelectTrigger className="">
+                                <SelectValue placeholder="Select Course" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {courses &&
+                                  courses.map((course: any) => (
+                                    <SelectItem key={course._id} value={course}>
+                                      {course.name}
+                                    </SelectItem>
+                                  ))}
+                              </SelectContent>
+                            </Select>
                           </div>
                           <div className="grid grid-cols-4 items-center gap-4">
                             <Label
@@ -591,7 +642,9 @@ export default function StudentPage({ params }: any) {
                   </p>
                   <p className="py-2 text-1xl">DOB: {student.dob}</p>
                   <p className="py-2 text-1xl">Roll No: {student.roll_no}</p>
-                  <p className="py-2 text-1xl">Course: {student.course.name}</p>
+                  <p className="py-2 text-1xl">
+                    Course: {student.course?.name}
+                  </p>
                   <p className="py-2 text-1xl">
                     Session: {student.session_start_year} -{" "}
                     {student.session_end_year}
