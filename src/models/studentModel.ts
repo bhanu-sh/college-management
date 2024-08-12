@@ -23,8 +23,6 @@ const studentSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: true,
-      unique: true,
     },
     dob: {
       type: Date,
