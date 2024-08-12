@@ -3,16 +3,12 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import axios from "axios";
-import Link from "next/link";
-import toast from "react-hot-toast";
-import { jsonToExcel } from "@/helpers/jsonToExcel";
 import StudentTableFee from "@/app/components/StudentTableFee";
 
 export default function CourseStudentPage({ params }: any) {
   const { name } = params;
 
   const { data: session } = useSession();
-
   const [college, setCollege] = useState<any>(null);
 
   const fetchCollege = async () => {
@@ -35,12 +31,14 @@ export default function CourseStudentPage({ params }: any) {
   return (
     <>
       {session && (
-        <StudentTableFee
-          collegeId={String(session.user.college_id)}
-          role={String(session.user.role)}
-          lock={college?.lock}
-          name={name}
-        />
+        <>
+          <StudentTableFee
+            collegeId={String(session.user.college_id)}
+            role={String(session.user.role)}
+            lock={college?.lock}
+            name={name}
+          />
+        </>
       )}
     </>
   );

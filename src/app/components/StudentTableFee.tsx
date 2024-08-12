@@ -16,6 +16,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export default function StudentTableFee({
   collegeId,
@@ -36,6 +47,10 @@ export default function StudentTableFee({
   const [sortConfig, setSortConfig] = useState({ key: "", direction: "asc" });
   const [totalFee, setTotalFee] = useState(0);
   const [dueFee, setDueFee] = useState(0);
+  const [newFee, setNewFee] = useState<any>({
+    name: "",
+    amount: 0,
+  });
 
   const getStudents = async () => {
     try {
@@ -74,6 +89,21 @@ export default function StudentTableFee({
       setFee(response.data.data);
     } catch (error: any) {
       console.log("Error", error.response.data.error);
+    }
+  };
+
+  const addFee = async () => {
+    try {
+      const response = await axios.post(`/api/fee/addbycourse`, {
+        course: name,
+        college_id: collegeId,
+        ...newFee,
+      });
+      if (response.data.success) {
+        toast.success(response.data.message);
+      }
+    } catch (error: any) {
+      console.log("Error", error.response?.data?.error);
     }
   };
 
@@ -195,6 +225,43 @@ export default function StudentTableFee({
               Add Student
             </button>
           </Link>
+          <Dialog>
+            <DialogTrigger>
+              <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400">
+                Add Fee
+              </button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Expense</DialogTitle>
+                <DialogDescription>
+                  <div className="flex flex-col gap-2 justify-center">
+                    <Label htmlFor="name">Fee Name *</Label>
+                    <Input
+                      id="name"
+                      type="text"
+                      placeholder="Enter fee name"
+                      onChange={(e) => {
+                        setNewFee({ ...newFee, name: e.target.value });
+                      }}
+                    />
+                    <Label htmlFor="amount">Amount *</Label>
+                    <Input
+                      id="amount"
+                      type="number"
+                      placeholder="Enter fee amount"
+                      onChange={(e) => {
+                        setNewFee({ ...newFee, amount: e.target.value });
+                      }}
+                    />
+                    <Button variant="info" onClick={addFee}>
+                      Add
+                    </Button>
+                  </div>
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
           <button
             className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400"
             onClick={exportToExcel}

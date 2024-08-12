@@ -100,7 +100,6 @@ export default function AddStudent() {
       student.l_name.length > 0 &&
       student.father_name.length > 0 &&
       student.mother_name.length > 0 &&
-      student.email.length > 0 &&
       student.phone.length > 0 &&
       student.dob.length > 0 &&
       student.gender.length > 0 &&
