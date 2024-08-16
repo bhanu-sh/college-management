@@ -33,11 +33,13 @@ export default function StudentTableFee({
   role,
   lock,
   name,
+  year,
 }: {
   collegeId: string;
   role: string;
   lock: boolean;
   name: string;
+  year: string;
 }) {
   const [user, setUser] = useState([]);
   const [fee, setFee] = useState([]);
@@ -58,9 +60,12 @@ export default function StudentTableFee({
       const response = await axios.post(`/api/student/getbycollege`, {
         college_id: collegeId,
       });
-      //filter user by course name
+      console.log(response.data.data);
+      //filter user by course name and year
+      console.log(name, year);
       const filteredUser = response.data.data.filter(
-        (user: any) => user.course.name === name
+        (user: any) =>
+          user.course.name === name && user.course.duration === Number(year)
       );
 
       setUser(filteredUser);

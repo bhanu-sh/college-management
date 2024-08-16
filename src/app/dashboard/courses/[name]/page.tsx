@@ -8,6 +8,11 @@ import StudentTableFee from "@/app/components/StudentTableFee";
 export default function CourseStudentPage({ params }: any) {
   const { name } = params;
 
+  //split the name to get the name-year
+  const splitName = name.split("-");
+  const courseName = splitName[0];
+  const courseYear = splitName[1];
+
   const { data: session } = useSession();
   const [college, setCollege] = useState<any>(null);
 
@@ -36,7 +41,8 @@ export default function CourseStudentPage({ params }: any) {
             collegeId={String(session.user.college_id)}
             role={String(session.user.role)}
             lock={college?.lock}
-            name={name}
+            name={courseName}
+            year={courseYear}
           />
         </>
       )}

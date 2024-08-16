@@ -107,7 +107,7 @@ export default function CoursesPage() {
                   {course.students?.length} Students
                 </h1>
                 <div className="flex justify-between items-center mt-4">
-                  <Link href={`/dashboard/courses/${course.name}`}>
+                  <Link href={`/dashboard/courses/${course.name}-${course.duration}`}>
                     <Button variant="default">View</Button>
                   </Link>
                   {session?.user.role === "CollegeAdmin" && (

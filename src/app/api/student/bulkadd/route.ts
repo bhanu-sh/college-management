@@ -1,7 +1,7 @@
 import { connect } from "@/dbConfig/dbConfig";
-import Student from "@/models/studentModel";
-import Fee from "@/models/feeModel";
-import Course from "@/models/courseModel";
+import { Student } from "@/models";
+import { Fee } from "@/models";
+import { Course } from "@/models";
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
@@ -132,6 +132,10 @@ export async function POST(request: NextRequest) {
           message: "Student created successfully",
           savedStudent,
         });
+
+        const CourseDetails = await Course.findOne({ _id: course_id });
+        CourseDetails.students.push(savedStudent._id);
+        await CourseDetails.save();
       } catch (error: any) {
         if (error instanceof Error) {
           results.push({ phone, status: "error", message: error.message });
