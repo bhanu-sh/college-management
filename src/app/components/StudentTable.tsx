@@ -106,13 +106,13 @@ export default function StudentTable({
   const searchUser = (query: string) => {
     const results = user.filter((user: any) => {
       return (
-        user.f_name.toLowerCase().includes(query.toLowerCase()) ||
-        user.l_name.toLowerCase().includes(query.toLowerCase()) ||
-        user.phone.toLowerCase().includes(query.toLowerCase()) ||
-        user.email.toLowerCase().includes(query.toLowerCase()) ||
+        user.f_name?.toLowerCase().includes(query.toLowerCase()) ||
+        user.l_name?.toLowerCase().includes(query.toLowerCase()) ||
+        user.phone?.toLowerCase().includes(query.toLowerCase()) ||
+        user.email?.toLowerCase().includes(query.toLowerCase()) ||
         user.course?.name?.toLowerCase().includes(query.toLowerCase()) ||
-        user.session_start_year.toString().includes(query.toLowerCase()) ||
-        user.roll_no.toLowerCase().includes(query.toLowerCase())
+        user.session_start_year?.toString().includes(query.toLowerCase()) ||
+        user.roll_no?.toLowerCase().includes(query.toLowerCase())
       );
     });
 
