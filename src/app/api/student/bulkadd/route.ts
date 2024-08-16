@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
             status: "error",
             message: "Invalid phone or password format",
           });
+          console.log("Invalid phone or password format");
           continue;
         }
 
@@ -75,6 +76,7 @@ export async function POST(request: NextRequest) {
             status: "error",
             message: "Student already exists",
           });
+          console.log("Student already exists");
           continue;
         }
 
@@ -139,12 +141,14 @@ export async function POST(request: NextRequest) {
       } catch (error: any) {
         if (error instanceof Error) {
           results.push({ phone, status: "error", message: error.message });
+          console.error(error.message);
         } else {
           results.push({
             phone,
             status: "error",
             message: "An unknown error occurred",
           });
+          console.error("An unknown error occurred");
         }
       }
     }

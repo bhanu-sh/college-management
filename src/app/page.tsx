@@ -1,9 +1,21 @@
 "use client";
 
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
+  const router = useRouter();
+
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard");
+    }
+  }, [router, session]);
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-40 top-0 left-0">
@@ -37,7 +49,9 @@ export default function Home() {
       <div className="flex flex-wrap justify-around">
         <div className="w-64 bg-white rounded-md shadow-xl mb-6">
           <div className="flex flex-col justify-center items-center p-4">
-            <h1 className="text-xl font-bold text-balance mb-2">Student Management</h1>
+            <h1 className="text-xl font-bold text-balance mb-2">
+              Student Management
+            </h1>
             <p className="text-gray-600 text-justify">
               Manage student records, track attendance, and handle grades
               efficiently.
@@ -46,7 +60,9 @@ export default function Home() {
         </div>
         <div className="w-64 bg-white rounded-md shadow-xl mb-6">
           <div className="flex flex-col justify-center items-center p-4">
-            <h1 className="text-xl font-bold text-balance mb-2">Faculty Management</h1>
+            <h1 className="text-xl font-bold text-balance mb-2">
+              Faculty Management
+            </h1>
             <p className="text-gray-600 text-justify">
               Organize faculty information, schedules, and performance
               evaluations.
@@ -55,7 +71,9 @@ export default function Home() {
         </div>
         <div className="w-64 bg-white rounded-md shadow-xl mb-6">
           <div className="flex flex-col justify-center items-center p-4">
-            <h1 className="text-xl font-bold text-balance mb-2">Course Management</h1>
+            <h1 className="text-xl font-bold text-balance mb-2">
+              Course Management
+            </h1>
             <p className="text-gray-600 text-justify">
               Create and manage courses, assign teachers, and track student
               progress.
