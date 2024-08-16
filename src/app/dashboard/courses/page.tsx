@@ -101,7 +101,7 @@ export default function CoursesPage() {
                 className="w-80 p-4 bg-green-100 rounded-lg shadow-md my-5"
               >
                 <h2 className="text-xl font-semibold">
-                  {course.name} ({course.duration} years)
+                  {course.name} (Year {course.duration})
                 </h2>
                 <h1 className="text-4xl text-red-500 font-semibold">
                   {course.students?.length} Students
@@ -166,7 +166,7 @@ export default function CoursesPage() {
                   }
                 />
                 <Input
-                  placeholder="Duration"
+                  placeholder="Year"
                   type="number"
                   value={addedCourse.duration}
                   onChange={(e) =>
