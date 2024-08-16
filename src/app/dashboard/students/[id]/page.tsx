@@ -643,7 +643,8 @@ export default function StudentPage({ params }: any) {
                   <p className="py-2 text-1xl">DOB: {student.dob}</p>
                   <p className="py-2 text-1xl">Roll No: {student.roll_no}</p>
                   <p className="py-2 text-1xl">
-                    Course: {student.course?.name}
+                    Course: {student.course?.name} | Year:{" "}
+                    {student.course?.duration}
                   </p>
                   <p className="py-2 text-1xl">
                     Session: {student.session_start_year} -{" "}
