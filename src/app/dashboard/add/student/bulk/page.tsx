@@ -191,7 +191,7 @@ export default function AddStudents() {
         {loading && <p className="mt-5">Loading...</p>}
         {json && (
           <div className="mt-5">
-            <h2 className="text-2xl font-bold text-red-500">JSON Data</h2>
+            <h2 className="text-2xl font-bold text-red-500">Preview Data</h2>
             <div className="overflow-x-auto w-full">
               <table className="table-auto w-full mt-5">
                 <thead className="bg-gray-200">
