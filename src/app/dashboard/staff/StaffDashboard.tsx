@@ -11,10 +11,18 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogClose,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Loader from "@/app/components/Loader";
@@ -49,10 +57,18 @@ export default function StaffDashboard() {
   const [course, setCourse] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [search, setSearch] = useState("");
   const [pendingFees, setPendingFees] = useState(0);
   const [expenses, setExpenses] = useState(0);
   const [disabled, setDisabled] = useState(true);
   const [newExpense, setNewExpense] = useState(initialExpenseState);
+  const [payFee, setPayFee] = useState({
+    name: "Fee Payment",
+    amount: "",
+    method: "cash",
+    student_id: "",
+    college_id: "",
+  });
 
   const handleFetchData = async () => {
     setLoading(true);
@@ -122,6 +138,25 @@ export default function StaffDashboard() {
     } catch (error: any) {
       console.log("Adding failed", error.response.data.error);
       toast.error(error.response.data.error);
+    }
+  };
+
+  const payingFee = async (studentId: string, collegeId: string) => {
+    try {
+      const updatedPayFee = {
+        ...payFee,
+        college_id: collegeId,
+        student_id: studentId,
+      };
+      setPayFee(updatedPayFee);
+      console.log("Paying Fee", updatedPayFee);
+      const res = await axios.post("/api/fee/pay", updatedPayFee);
+      console.log("Fee Paid", res.data);
+      toast.success("Fee Paid");
+      setPayFee({ ...payFee, amount: "" });
+    } catch (error: any) {
+      console.error("Error paying fee:", error);
+      toast.error("Error paying fee");
     }
   };
 
@@ -196,7 +231,7 @@ export default function StaffDashboard() {
           <hr />
           <div className="flex flex-col justify-center py-5 border-b-2 border-gray-300">
             <h2 className="text-3xl font-bold text-center">Finance:</h2>
-            <div className="mx-auto mt-3">
+            <div className="flex flex-col gap-2 mx-auto mt-3">
               <Dialog onOpenChange={() => setNewExpense(initialExpenseState)}>
                 <DialogTrigger>
                   <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400">
@@ -267,9 +302,142 @@ export default function StaffDashboard() {
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
+              <Dialog onOpenChange={() => setNewExpense(initialExpenseState)}>
+                <DialogTrigger>
+                  <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400">
+                    Pay Fee
+                  </button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Pay Fee</DialogTitle>
+                    <DialogDescription>
+                      <div className="flex flex-col gap-2 justify-center">
+                        search for student
+                        <Input
+                          placeholder="Search Student"
+                          value={search}
+                          onChange={(e) => setSearch(e.target.value)}
+                        />
+                        <div className="flex flex-col gap-2">
+                          {search &&
+                            students
+                              .filter(
+                                (student: any) =>
+                                  student?.f_name
+                                    ?.toLowerCase()
+                                    .includes(search) ||
+                                  student?.l_name
+                                    ?.toLowerCase()
+                                    .includes(search)
+                              )
+                              .map((student: any) => (
+                                <div
+                                  key={student._id}
+                                  className="flex flex-col gap-2"
+                                >
+                                  <div className="flex justify-between gap-4">
+                                    <div className="flex flex-col">
+                                      <p>
+                                        <span className="font-bold">
+                                          Name:{" "}
+                                        </span>
+                                        {student.f_name} {student.l_name}
+                                      </p>
+                                      <p>
+                                        <span className="font-bold">
+                                          Course:{" "}
+                                        </span>
+                                        <span>{student.course?.name}</span>
+                                      </p>
+                                    </div>
+                                    <Dialog>
+                                      <DialogTrigger>
+                                        <Button variant={"success"}>
+                                          Pay Fee
+                                        </Button>
+                                      </DialogTrigger>
+                                      <DialogContent>
+                                        <DialogHeader>
+                                          <DialogTitle>Pay Fees</DialogTitle>
+                                          <DialogDescription>
+                                            <p>
+                                              <span className="font-bold">
+                                                Name:{" "}
+                                              </span>
+                                              {student.f_name} {student.l_name}
+                                            </p>
+                                            <p>
+                                              <span className="font-bold">
+                                                Course:{" "}
+                                              </span>
+                                              <span>
+                                                {student.course?.name}
+                                              </span>
+                                            </p>
+                                            <div className="mt-2 flex flex-col gap-2 justify-center">
+                                              <Select
+                                                onValueChange={(value) =>
+                                                  setPayFee({
+                                                    ...payFee,
+                                                    method: value,
+                                                  })
+                                                }
+                                              >
+                                                <SelectTrigger className="">
+                                                  <SelectValue placeholder="Method of Payment" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                  <SelectItem value="cash">
+                                                    Cash
+                                                  </SelectItem>
+                                                  <SelectItem value="cheque">
+                                                    Cheque
+                                                  </SelectItem>
+                                                  <SelectItem value="online">
+                                                    Online
+                                                  </SelectItem>
+                                                </SelectContent>
+                                              </Select>
+                                              <Input
+                                                placeholder="Amount"
+                                                onChange={(e) =>
+                                                  setPayFee({
+                                                    ...payFee,
+                                                    amount: e.target.value,
+                                                  })
+                                                }
+                                              />
+                                              <DialogClose className="w-6 mx-auto">
+                                                <Button
+                                                  variant={"info"}
+                                                  onClick={() => {
+                                                    payingFee(
+                                                      student._id,
+                                                      student.college_id
+                                                    );
+                                                  }}
+                                                >
+                                                  Pay Fee
+                                                </Button>
+                                              </DialogClose>
+                                            </div>
+                                          </DialogDescription>
+                                        </DialogHeader>
+                                      </DialogContent>
+                                    </Dialog>
+                                  </div>
+                                  <hr className="h-0.5 my-2 border-0 rounded bg-gray-300" />
+                                </div>
+                              ))}
+                        </div>
+                      </div>
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
             </div>
             <div className="flex flex-wrap justify-around">
-
               <ExpenseCard
                 title="Pending Fees"
                 amount={formatCurrency(pendingFees)}
