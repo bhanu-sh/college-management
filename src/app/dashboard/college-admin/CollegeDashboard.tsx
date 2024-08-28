@@ -312,7 +312,7 @@ export default function CollegeDashboard() {
                   </DialogHeader>
                 </DialogContent>
               </Dialog>
-              <Dialog onOpenChange={() => setNewExpense(initialExpenseState)}>
+              <Dialog onOpenChange={() => setPayFee({ ...payFee, amount: "" })}>
                 <DialogTrigger>
                   <button className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-green-400">
                     Pay Fee
@@ -324,22 +324,24 @@ export default function CollegeDashboard() {
                     <DialogDescription>
                       <div className="flex flex-col gap-2 justify-center">
                         search for student
-                        <Input
-                          placeholder="Search Student"
-                          value={search}
-                          onChange={(e) => setSearch(e.target.value)}
-                        />
+                        <div className="flex items-center border-2 border-gray-300 rounded-md px-2">
+                          <span className="font-bold">SRMM</span>
+                          <Input
+                            placeholder="Search Student"
+                            className="border-0 active:ring-0 focus:ring-0 focus:outline-none active:outline-none focus:border-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-0 focus-visible:ring-offset-0 focus-visible:ring-offset-transparent focus-visible:border-transparent focus-visible:ring-transparent"
+                            value={search.toUpperCase()}
+                            onChange={(e) =>
+                              setSearch(e.target.value.toLowerCase())
+                            }
+                          />
+                        </div>
                         <div className="flex flex-col gap-2">
                           {search &&
                             students
-                              .filter(
-                                (student: any) =>
-                                  student?.f_name
-                                    ?.toLowerCase()
-                                    .includes(search) ||
-                                  student?.l_name
-                                    ?.toLowerCase()
-                                    .includes(search)
+                              .filter((student: any) =>
+                                student?.roll_no
+                                  ?.toLowerCase()
+                                  .startsWith("srmm" + search)
                               )
                               .map((student: any) => (
                                 <div
@@ -359,6 +361,12 @@ export default function CollegeDashboard() {
                                           Course:{" "}
                                         </span>
                                         <span>{student.course?.name}</span>
+                                      </p>
+                                      <p>
+                                        <span className="font-bold">
+                                          Roll No:{" "}
+                                        </span>
+                                        {student.roll_no}
                                       </p>
                                     </div>
                                     <Dialog>
